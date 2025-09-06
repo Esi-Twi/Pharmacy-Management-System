@@ -1,0 +1,74 @@
+body {
+    overflow-x: hidden;
+}
+
+* {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+@font-face {
+    font-family: 'Tangerine';
+    src: url('../public/assets/fonts/Tangerine-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Tangerine";
+    src: url('../public//assets/fonts/Tangerine-Bold.ttf');
+    font-weight: bold;
+}
+
+.ff-tangerine {
+    font-family: "Tangerine";
+}
+
+
+/* ---------------------pre-made css------------------- */
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.b-button {
+    @apply bg-brandYellow rounded-md px-[2rem] py-3 text-sm font-bold;
+}
+.b-button:hover {
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.10);
+    transition: all 0.5s ease;
+}
+.active {
+    font-weight: bold;
+    @apply text-brandTeal;
+}
+
+/* --------------login apge------------------------ */
+.login-background {
+    background-image: url('../public/assets/imgs/p-woman2.jpg');
+    background-size: cover;
+}
+
+.login-details {
+    background-color: rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.login-info {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    border-bottom: 1px solid black;
+    padding: 4px 20px;
+    margin-bottom: 25px;
+}
+.login-info input {
+    background-color: transparent;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    color: black;
+    width: 80%;
+}
+.login-info input::placeholder {
+    color: black;
+}
