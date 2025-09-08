@@ -1,3 +1,54 @@
+### -------***routes naming *** -------------
+🔑 Auth Routes (/api/auth)
+    POST /api/auth/login → login (Admin & Pharmacist)
+    POST /api/auth/register → create account (Admin only)
+    GET /api/auth/profile → get user profile
+    PUT /api/auth/change-password → update password
+
+👤 Admin Routes (/api/admin)
+Staff Management
+    POST /api/admin/staff → add staff
+    GET /api/admin/staff → get all staff
+    GET /api/admin/staff/:id → get staff by ID
+    PUT /api/admin/staff/:id → update staff
+    PATCH /api/admin/staff/:id/status → activate/deactivate staff
+
+Drug Management
+    POST /api/admin/drugs → add drug
+    PUT /api/admin/drugs/:id → update drug
+    DELETE /api/admin/drugs/:id → delete drug
+    GET /api/admin/drugs → list all drugs
+    GET /api/admin/drugs/:id → get single drug
+
+Reports & Analytics
+    GET /api/admin/reports/daily
+    GET /api/admin/reports/weekly
+    GET /api/admin/reports/monthly
+    GET /api/admin/reports/most-sold
+    GET /api/admin/reports/export/:format → export as pdf, excel, csv
+
+👩‍⚕️ Pharmacist Routes (/api/pharmacist)
+    Sales & Billing
+    POST /api/pharmacist/sales → create new sale
+    GET /api/pharmacist/sales → get all sales (filter by date, drug)
+    GET /api/pharmacist/sales/:id → get sale by ID (receipt lookup)
+
+Inventory (Limited)
+    PATCH /api/pharmacist/drugs/:id/stock → update stock quantity
+    GET /api/pharmacist/drugs/search?name=xxx → search drugs
+    GET /api/pharmacist/drugs/available → list available drugs
+
+Sales History
+    GET /api/pharmacist/history → get sales history
+
+🔔 General Routes (/api/general) (Both roles)
+    GET /api/general/notifications → fetch all notifications
+    PATCH /api/general/notifications/:id/read → mark notification as read
+    GET /api/general/drugs/near-expiry → list near expiry drugs
+    GET /api/general/drugs/low-stock → list low stock drugs
+
+
+
 *******registeration detials
 -start with one supervisor
 -incoming supervisor can create an account but wait for verification

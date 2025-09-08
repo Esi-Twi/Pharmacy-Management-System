@@ -9,22 +9,22 @@ exports.login = async (req, res) => {
 
     try {
         if (!email || !password) {
-            res.status(400).json({ success: false, msg: 'Email and Password is required' })
+            return res.status(400).json({ success: false, msg: 'Email and Password is required' })
         }
 
         const { error, value } = loginSchema.validate({ email, password })
         if (error) {
-            res.status(400).json({ success: false, msg: error.details[0].message })
+            return res.status(400).json({ success: false, msg: error.details[0].message })
         }
 
         const existingUser = await User.findOne({email}).select('+password')
         if(!existingUser) {
-            res.status(400).json({ success: false, msg: 'User does not exists' })
+            return res.status(400).json({ success: false, msg: 'User does not exists' })
         }
 
         const result = await doHashValidation(password, existingUser.password)
         if(!result) {
-            res.status(400).json({ success: false, msg: 'Invalid credentials' })
+            return res.status(400).json({ success: false, msg: 'Invalid credentials' })
         }
 
         const token = jwt.sign({
@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
             expiresIn: '8h'
         })
         
-        res.cookie('Authorization', 'Bearer' + token, {
+        return res.cookie('Authorization', 'Bearer ' + token, {
             expiresIn: new Date(Date.now() + 8 * 3600000), 
             httpOnly: process.env.NODE_ENV == 'production', 
             secure: process.env.NODE_ENV == 'production',
@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+        return console.log(error)
     }
 
 }

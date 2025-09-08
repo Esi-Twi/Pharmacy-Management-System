@@ -1,5 +1,8 @@
 *** ---------------for documentation purposes------------ ***
 ### completed backend functionalities
+* created register user --left with only admin can do it and logged in admin
+* login as user
+* logout as user if logged in already
 
 
 
