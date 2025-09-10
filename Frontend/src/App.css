@@ -6,6 +6,91 @@ body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+
+/* 
+
+Got it 👍 If you don’t want **green**, let’s build a **professional, modern pharmacy dashboard** with an alternative palette that still feels **clean, trustworthy, and healthcare-oriented**.
+
+---
+
+# 🎨 Alternative Dashboard Color Scheme (No Green)
+
+### 1. **Primary Color → Blue (#1E88E5 or #1976D2)**
+
+* ✅ Represents **trust, calm, and professionalism** (widely used in healthcare & tech).
+* ✅ Works well for main buttons, active sidebar menu items, and key highlights.
+
+---
+
+### 2. **Secondary Color → Purple (#7B1FA2 or #9C27B0)**
+
+* ✅ Adds a **modern, fresh accent** without overpowering.
+* ✅ Great for charts, secondary buttons, and highlights.
+* ✅ Stands out nicely against blue.
+
+---
+
+### 3. **Background → White (#FFFFFF) & Light Gray (#F5F7FA)**
+
+* ✅ Keeps the dashboard **minimal and clean**.
+* ✅ Makes the blue & purple pop.
+* ✅ Reduces visual fatigue for long working hours.
+
+---
+
+### 4. **Text Colors → Dark Gray (#212121) & Medium Gray (#616161)**
+
+* ✅ Dark gray instead of black = softer & easier to read.
+* ✅ Medium gray for labels, timestamps, or secondary info.
+
+---
+
+### 5. **Status / Alerts Colors**
+
+* 🔴 Expired Drugs → Red (#D32F2F) (urgent).
+* 🟠 Near Expiry / Low Stock → Orange (#FB8C00) (warning but not alarming).
+* 🔵 Info → Blue (#0288D1) (consistent with primary).
+* 🟣 Success / Completed → Purple (#7B1FA2) (ties in with secondary).
+
+---
+
+### 6. **Charts & Analytics Colors**
+
+* Sales → Blue
+* Revenue → Purple
+* Expired Drugs → Red
+* Low Stock → Orange
+* Neutral Info → Gray
+
+This way, your charts are **colorful but still professional**.
+
+---
+
+# ✅ Example Usage Across UI
+
+* **Sidebar & active menu** → Blue.
+* **Primary buttons** (Save, Submit, Add Drug) → Blue.
+* **Secondary buttons** (Cancel, View) → Purple.
+* **Cards & widgets background** → White.
+* **Charts & alerts** → Mix of Blue, Purple, Orange, Red.
+
+---
+
+⚡ This **blue + purple theme** feels:
+
+* **Trustworthy** (blue).
+* **Modern & professional** (purple).
+* **Clean & readable** (light backgrounds, dark text).
+* **Distinctive for alerts** (red/orange).
+
+---
+
+👉 Do you want me to make you a **color-coded sidebar mockup list** (with exact hex codes for each section) so you can plug it straight into your React + Tailwind project?
+
+
+
+*/
+
 @font-face {
     font-family: 'Tangerine';
     src: url('../public/assets/fonts/Tangerine-Regular.ttf');

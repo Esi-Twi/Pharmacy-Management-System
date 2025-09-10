@@ -4,53 +4,6 @@ const { doHash, doHashValidation } = require('../utils/hashing')
 const jwt = require('jsonwebtoken')
 
 
-exports.login = async (req, res) => {
-    const { email, password } = req.body
-
-    try {
-        if (!email || !password) {
-            return res.status(400).json({ success: false, msg: 'Email and Password is required' })
-        }
-
-        const { error, value } = loginSchema.validate({ email, password })
-        if (error) {
-            return res.status(400).json({ success: false, msg: error.details[0].message })
-        }
-
-        const existingUser = await User.findOne({email}).select('+password')
-        if(!existingUser) {
-            return res.status(400).json({ success: false, msg: 'User does not exists' })
-        }
-
-        const result = await doHashValidation(password, existingUser.password)
-        if(!result) {
-            return res.status(400).json({ success: false, msg: 'Invalid credentials' })
-        }
-
-        const token = jwt.sign({
-            userId: existingUser._id, 
-            email: existingUser.email, 
-            verified: existingUser.verified
-        }, process.env.JWT_SECRET, {
-            expiresIn: '8h'
-        })
-        
-        return res.cookie('Authorization', 'Bearer ' + token, {
-            expiresIn: new Date(Date.now() + 8 * 3600000), 
-            httpOnly: process.env.NODE_ENV == 'production', 
-            secure: process.env.NODE_ENV == 'production',
-        }).json({success: true, token, msg: 'logged in successfully!'})
-
-
-    } catch (error) {
-        return console.log(error)
-    }
-
-}
-
-exports.logout = async (req, res) => {
-    res.clearCookie('Authorization').status(200).json({success: true, msg: 'logged out successfully!'})
-}
 
 exports.register = async (req, res) => {
     const { name, email, password, role } = req.body
@@ -78,11 +31,88 @@ exports.register = async (req, res) => {
             password: hashedPassword,
             role: role || 'Pharmacist'
         })
-
         await user.save()
+
+        user.password = undefined
         res.status(200).json({ success: true, msg: `${user.role} is created successfully`, user: user })
 
     } catch (error) {
         console.log(error);
     }
 }
+
+exports.login = async (req, res) => {
+    const { email, password } = req.body
+
+    try {
+        if (!email || !password) {
+            return res.status(400).json({ success: false, msg: 'Email and Password is required' })
+        }
+
+        const { error, value } = loginSchema.validate({ email, password })
+        if (error) {
+            return res.status(400).json({ success: false, msg: error.details[0].message })
+        }
+
+        const existingUser = await User.findOne({email}).select('+password')
+        if(!existingUser) {
+            return res.status(400).json({ success: false, msg: 'User does not exists' })
+        }
+
+        const result = await doHashValidation(password, existingUser.password)
+        if(!result) {
+            return res.status(400).json({ success: false, msg: 'Invalid credentials' })
+        }
+
+        const token = jwt.sign({
+            userId: existingUser._id, 
+            email: existingUser.email, 
+            role: existingUser.role,
+            verified: existingUser.verified
+        }, process.env.JWT_SECRET, {
+            expiresIn: '8h'
+        })
+        existingUser.password = undefined
+
+        return res.cookie('Authorization', 'Bearer ' + token, {
+            expiresIn: new Date(Date.now() + 8 * 3600000), 
+            httpOnly: process.env.NODE_ENV == 'production', 
+            secure: process.env.NODE_ENV == 'production',
+        }).json({success: true, token, user: existingUser, msg: 'logged in successfully!'})
+
+
+    } catch (error) {
+        return console.log(error)
+    }
+
+}
+
+exports.logout = async (req, res) => {
+    res.clearCookie('Authorization').status(200).json({success: true, msg: 'logged out successfully!'})
+}
+
+
+
+//  **Pharmacist Backend Functionalities**
+
+// * login
+// * Update info (name, contact).
+
+// ### 💊 Drug Inventory (Limited Scope)
+
+// * Update stock levels (e.g., after restock).
+// * Mark drugs as near-expiry.  ***** want to make it an automatic feature
+// * View available drugs.
+// * Search drugs by name/category.
+
+// ### 💵 Sales & Billing
+
+// * Create new sale (select drug, quantity, process purchase).
+// * Generate receipt/ticket for each sale.
+// * Store purchase details (drugs sold, quantities, price, total).
+// * Reduce stock automatically after sale.
+
+// ### 📜 Sales History
+
+// * View past transactions (filter by date, receipt number, or drug).
+// * Lookup individual receipts.

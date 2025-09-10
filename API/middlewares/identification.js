@@ -26,3 +26,11 @@ exports.identifier = async (req, res, next) => {
         console.log(error)
     }
 }
+
+exports.authorizedRoles = (...roles) => async(req,res, next) => {
+    if(!roles.include(req.user.role)) {
+        return res.status(403).json({success: false, msg: 'Access Denied'})
+    }
+
+    next()
+}
