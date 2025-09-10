@@ -1,27 +1,57 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios'
+import { toast } from 'sonner';
 
 function LogIn() {
     const [showPassword, setShowPassword] = useState(false);
-
-    // react hook form 
     const { register, handleSubmit, reset } = useForm()
 
+    const { login } = useAuth()
+    const navigate = useNavigate()
 
     const onSubmit = async (data) => {
-        console.log(data)
-
         try {
-            const res = await axios.post('http://localhost:3000/api/auth/login', data, {
-                withCredentials: true
-            }, {headers: {'Content-Type': 'application/json'}})
-                .then(res => console.log(res))
-                .catch(error => console.log(error))
-                
+            const res = await api.post("api/auth/login", data, {
+                headers: { 'Content-Type': 'application/json' }
+            })
+
+            console.log(res.data.user);
+
+
+            login(res.data.user, res.data.token)
+            navigate('/dashboard')
+
         } catch (error) {
-            console.log(error)
+            let message = 'Login failed!!';
+
+            if (error.response) {
+                const serverMessage = error.response.data.msg || error.response.data.error;
+
+                if (serverMessage?.includes("fails to match the required pattern")) {
+                    message = "Password must contain at least one uppercase letter and one number.";
+                } else {
+                    message = serverMessage;
+                }
+
+            } else if (error.request) {
+                message = 'No response from server. Please try again.';
+            } else {
+                message = error.message;
+            }
+
+            toast.error(message, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     }
 
@@ -41,7 +71,7 @@ function LogIn() {
                         <input type={showPassword ? 'text' : 'password'}
                             placeholder='Password'  {...register("password")} />
 
-                        <button onClick={() => setShowPassword(!showPassword)}>
+                        <button type='button' onClick={() => setShowPassword(!showPassword)}>
                             <i className={`bi ${showPassword ? "bi-eye" : "bi-eye-slash"} text-lg`}></i>
                         </button>
                     </div>

@@ -1,6 +1,6 @@
 ### -------***routes naming *** -------------
 🔑 Auth Routes (/api/auth)
-    POST /api/auth/login → login (Admin & Pharmacist)
+    POST /api/auth/login → login (Admin & Pharmacist) ✅ 
     POST /api/auth/register → create account (Admin only)
     GET /api/auth/profile → get user profile
     PUT /api/auth/change-password → update password
@@ -60,7 +60,7 @@ Sales History
 -reset password
 -supervisor should see logout and login sessions with the timestamps
 
-*** login process
+*** login process✅ 
 -take email password
 -check if verified
 -check account status
