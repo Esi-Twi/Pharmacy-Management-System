@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema({
     name: {
         type: String, 
-        required: [true, 'Name is required'], 
         trim: true
     }, 
     email: {
@@ -15,7 +14,6 @@ const userSchema = new mongoose.Schema({
     }, 
     password: {
         type: String, 
-        required: [true, 'Password is required'], 
         trim: true, 
         select: false
     }, 
@@ -27,12 +25,24 @@ const userSchema = new mongoose.Schema({
         }, 
         default: 'Pharmacist'
     },
+    status: { 
+        type: String, 
+        enum: {
+            values: ['active', 'inactive'], 
+            message: '{VALUE} is not supported', 
+        }, 
+        default: 'active'
+    },
     verified: {
         type: Boolean, 
         default: false
     }, 
     verificationToken: { type: String },
-    verificationTokenValidation: {type: Date}
+    verificationTokenValidation: {type: Date}, 
+    deleted: {
+        type: Boolean, 
+        default: false
+    }
 }, {
     timestamps: true
 })

@@ -44,6 +44,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { email, password } = req.body
 
+    //check if user is not deleted or inactive before login
     try {
         if (!email || !password) {
             return res.status(400).json({ success: false, msg: 'Email and Password is required' })
@@ -55,8 +56,19 @@ exports.login = async (req, res) => {
         }
 
         const existingUser = await User.findOne({email}).select('+password')
-        if(!existingUser) {
+        if(!existingUser ) {
             return res.status(400).json({ success: false, msg: 'User does not exists' })
+        }
+        
+        // const inactiveUser = await User.findOne
+        const deletedUser = await User.findOne({email, deleted: true})
+        if(deletedUser) {
+            return res.status(400).json({ success: false, msg: 'User does not exist deleted' })
+        }
+
+        const inactiveUser = await User.findOne({email, status: 'inactive'}) 
+        if(inactiveUser) {
+            return res.status(400).json({ success: false, msg: 'This account is inactive' })
         }
 
         const result = await doHashValidation(password, existingUser.password)
@@ -92,27 +104,3 @@ exports.logout = async (req, res) => {
 }
 
 
-
-//  **Pharmacist Backend Functionalities**
-
-// * login
-// * Update info (name, contact).
-
-// ### 💊 Drug Inventory (Limited Scope)
-
-// * Update stock levels (e.g., after restock).
-// * Mark drugs as near-expiry.  ***** want to make it an automatic feature
-// * View available drugs.
-// * Search drugs by name/category.
-
-// ### 💵 Sales & Billing
-
-// * Create new sale (select drug, quantity, process purchase).
-// * Generate receipt/ticket for each sale.
-// * Store purchase details (drugs sold, quantities, price, total).
-// * Reduce stock automatically after sale.
-
-// ### 📜 Sales History
-
-// * View past transactions (filter by date, receipt number, or drug).
-// * Lookup individual receipts.

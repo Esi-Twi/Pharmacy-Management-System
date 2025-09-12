@@ -10,7 +10,7 @@ Staff Management
     POST /api/admin/staff → add staff
     GET /api/admin/staff → get all staff
     GET /api/admin/staff/:id → get staff by ID
-    PUT /api/admin/staff/:id → update staff
+    PUT /api/admin/staff/:id → update staff role
     PATCH /api/admin/staff/:id/status → activate/deactivate staff
 
 Drug Management
@@ -65,6 +65,7 @@ Sales History
 -check if verified
 -check account status
 -redirect to approriate dashboard
+-generate token for staff who couldn't create profile by admin
 
 
 

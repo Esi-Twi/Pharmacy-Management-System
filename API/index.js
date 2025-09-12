@@ -1,10 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const authRouter = require('./routes/authRouter')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 
 const app = express()
+
+
+const authRouter = require('./routes/authRouter')
+const drugRouter = require('./routes/drugRouter')
+const staffRouter = require('./routes/staffRouter')
 
 
 app.use(cors({
@@ -14,6 +18,8 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 app.use('/api/auth', authRouter)
+app.use('/drugs', drugRouter)
+app.use('/staff', staffRouter)
 
 app.get('/', (req,res) => {
     res.send('this is the dunon pharmacy server')

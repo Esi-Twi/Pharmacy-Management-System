@@ -4,8 +4,130 @@
 * login as user successfully 
 * logout as user if logged in already
 
+* admin can add, updated, delete drug
+* admin, pharmacist can get drugs
 
 
 
 ### completed frontend functions
 * built login page
+
+import React, { useState } from 'react';
+import { Menu, X, User, Pill, Shield, Home, BarChart3, Users, Package, Settings, FileText, Activity } from 'lucide-react';
+
+
+
+
+-------------------------dashboard page-----------------------------------
+ <div className="flex h-screen bg-gray-100">
+        {/* Desktop Sidebar */}
+        <div className="hidden lg:block w-64 bg-white shadow-lg">
+          {role === 'admin' ? (
+            <AdminSideNav
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              isMobile={false}
+              closeSidebar={() => { }}
+            />
+          ) : (
+            <PharmaSideNav
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              isMobile={false}
+              closeSidebar={() => { }}
+            />
+          )}
+        </div>
+
+        {/* Mobile Sidebar Overlay */}
+        {sidebarOpen && (
+          <div className="lg:hidden fixed inset-0 z-50">
+            {/* Dark Overlay */}
+            <div
+              className="absolute inset-0 bg-black bg-opacity-50"
+              onClick={closeSidebar}
+            ></div>
+
+            {/* Sidebar */}
+            <div className="absolute left-0 top-0 h-full w-1/2 bg-white shadow-lg">
+              <div className="flex justify-end p-4">
+                <button
+                  onClick={closeSidebar}
+                  className="p-1 rounded-md hover:bg-gray-100"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              {getSidebarComponent()}
+            </div>
+          </div>
+        )}
+
+        {/* Content Area */}
+        <Drugs
+          activeItem={activeItem}
+          role={role}
+          toggleSidebar={toggleSidebar}
+        />
+
+        {/* Role Switcher (Demo purposes) */}
+        <div className="fixed bottom-4 right-4">
+          <select
+            value={role}
+            onChange={(e) => {
+              setRole(e.target.value);
+              setActiveItem('dashboard'); // Reset to dashboard when switching roles
+            }}
+            className="bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-lg"
+          >
+            <option value="admin">Admin</option>
+            <option value="pharmacist">Pharmacist</option>
+          </select>
+        </div>
+      </div>
+
+
+      -----------------------durg page-----------------------------------
+   <div className="flex-1 flex flex-col h-screen">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b p-4 flex items-center">
+        <button
+          onClick={toggleSidebar}
+          className="lg:hidden p-2 rounded-md hover:bg-gray-100 mr-3"
+        >
+          {/* <Menu size={20} /> */}
+        </button>
+        <h1 className="text-xl font-semibold text-gray-800">
+          {getContentTitle()}
+        </h1>
+        <div className="ml-auto">
+          <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded capitalize">
+            {role}
+          </span>
+        </div>
+      </div>
+
+      {/* Content Area */}
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-medium mb-4">
+            {getContentTitle()} Content
+          </h2>
+          <p className="text-gray-600 mb-4">
+            This is the {activeItem} page content for {role} role.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="bg-gray-50 rounded-lg p-4">
+                <h3 className="font-medium mb-2">Card {item}</h3>
+                <p className="text-gray-600 text-sm">
+                  Sample content for {activeItem} section
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+

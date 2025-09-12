@@ -15,12 +15,21 @@ function LogIn() {
 
     const onSubmit = async (data) => {
         try {
+            if(!data.email || !data.password) {
+                return   toast.error("Email and Password are required", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            }
+
             const res = await api.post("api/auth/login", data, {
                 headers: { 'Content-Type': 'application/json' }
             })
-
-            console.log(res.data.user);
-
 
             login(res.data.user, res.data.token)
             navigate('/dashboard')
