@@ -56,3 +56,20 @@ exports.deleteStaff = async (req, res) => {
 
     res.status(200).json({success: true, msg: "Staff deleted successfully!!", staff})
 } 
+
+exports.updateProfile = async(req,res) => {
+    const {id} = req.params
+
+    try {
+        const staff = await Staff.findByIdAndUpdate(
+            id, {
+                
+            }, {
+                new: true, 
+                runValidators: true
+            }
+        )
+    } catch (error) {
+        res.status(400).json({success: false, error})
+    }
+}

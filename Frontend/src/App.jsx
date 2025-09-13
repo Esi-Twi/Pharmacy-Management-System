@@ -8,7 +8,11 @@ import Home from './pages/Home'
 import LogIn from './pages/LogIn'
 import ErrorPage from './pages/ErrorPage'
 
-import Dashboard from './pages/Shared/Dashboard'
+
+import AppLayout from './layout/AppLayout'
+
+import sharedRoutes from './pages/routes/sharedRoutes'
+import adminRoutes from './pages/routes/adminRoutes'
 
 
 function App() {
@@ -23,29 +27,11 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<LogIn />} />
 
-          <Route path='/dashboard'
-            element={
-              <ProtectedRoutes allowedRoles={["Admin", "Pharmacist"]}>
-                <Dashboard />
-              </ProtectedRoutes>
-            }
-          />
 
-          <Route path='admin'
-            element={
-              <ProtectedRoutes allowedRoles={["Admin"]}>
-                <Dashboard />
-              </ProtectedRoutes>
-            }
-          />
-
-          <Route path='pharmacist'
-            element={
-              <ProtectedRoutes allowedRoles={["Pharmacist"]}>
-                <Dashboard />
-              </ProtectedRoutes>
-            }
-          />
+          <Route element={<ProtectedRoutes allowedRoles={["Admin", "Pharmacist"]}> <AppLayout/> </ProtectedRoutes>}>
+            {sharedRoutes()}
+            {adminRoutes()}
+          </Route>
 
           <Route path='*' element={<ErrorPage />} />
 

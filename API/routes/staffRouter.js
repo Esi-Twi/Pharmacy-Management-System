@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { getAllStaffs, addStaff, updateStaff, deleteStaff } = require('../controllers/staffControllers')
+const { getAllStaffs, addStaff, updateStaff, deleteStaff, updateProfile } = require('../controllers/staffControllers')
 const { identifier, authorizedRoles } = require('../middlewares/identification')
 
 router.route('/')
@@ -8,7 +8,7 @@ router.route('/')
     .post(identifier, authorizedRoles("Admin"), addStaff)
 
 router.route('/:id')
-    .patch(identifier, authorizedRoles("Admin", "Pharmacist"), updateStaff)
+    .patch(identifier, authorizedRoles("Admin", "Pharmacist"), updateStaff, updateProfile)
     .delete(identifier, authorizedRoles("Admin"), deleteStaff)
 
 

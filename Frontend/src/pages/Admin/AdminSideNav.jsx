@@ -10,16 +10,15 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       id: 'dashboard',
       icon: 'bi-speedometer2',
       label: 'Dashboard',
-      page: 'drugs'
+      page: 'dashboard'
     },
     {
       id: 'medicine',
       icon: 'bi-capsule',
       label: 'Medicine',
       submenu: [
-        { label: 'All Medicines', page: '/medicines' },
-        { label: 'Add Medicine', page: '/medicines/add' },
-        { label: 'Categories', page: '/medicines/categories' }
+        { label: 'All Medicines', page: '/all-meds' },
+        { label: 'Add Medicine', page: '/add-med' },
       ]
     },
     {
@@ -105,6 +104,16 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
         { label: 'Add Staff', page: '/staff/add' },
         { label: 'Staff Roles', page: '/staff/roles' }
       ]
+    },
+      {
+      id: 'account',
+      icon: 'bi-person',
+      label: 'Account',
+      submenu: [
+        { label: 'Profile', page: '/profile' },
+        { label: 'Add Staff', page: '/staff/add' },
+        { label: 'Staff Roles', page: '/staff/roles' }
+      ]
     }
   ];
 
@@ -177,7 +186,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
                         <ul className="mt-2 ml-8 space-y-1">
                           {item.submenu.map((subItem, index) => (
                             <li key={index}>
-                              <button
+                              <Link to={subItem.page}
                                 onClick={() => { handleNavigation(subItem.page); setActiveItem(subItem.label) }}
 
                                 className={`block w-full text-left px-3 py-2 text-sm text-gray-600 rounded-md transition-colors duration-200
@@ -186,14 +195,14 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
                                   }`}
                               >
                                 {subItem.label}
-                              </button>
+                              </Link>
                             </li>
                           ))}
                         </ul>
                       </div>
                     </div>
                   ) : (
-                    <button onClick={() => {setActiveItem(item.id); handleNavigation(item.page)}}
+                    <Link to={item.page} onClick={() => {setActiveItem(item.id); handleNavigation(item.page)}}
                       className={`w-full flex items-center space-x-3 px-3 py-3 text-left rounded-lg transition-colors duration-200  ${activeItem === item.id
                         ? 'bg-blue-600 text-white border-r-2'
                         : 'text-gray-700 hover:bg-gray-50'
@@ -201,7 +210,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
                     >
                       <i className={`${item.icon} text-lg`}></i>
                       <span className="font-medium">{item.label}</span>
-                    </button>
+                    </Link>
                   )}
                 </li>
               ))}

@@ -11,80 +11,9 @@
 
 ### completed frontend functions
 * built login page
-
-import React, { useState } from 'react';
-import { Menu, X, User, Pill, Shield, Home, BarChart3, Users, Package, Settings, FileText, Activity } from 'lucide-react';
+* built layout for pages
 
 
-
-
--------------------------dashboard page-----------------------------------
- <div className="flex h-screen bg-gray-100">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:block w-64 bg-white shadow-lg">
-          {role === 'admin' ? (
-            <AdminSideNav
-              activeItem={activeItem}
-              setActiveItem={setActiveItem}
-              isMobile={false}
-              closeSidebar={() => { }}
-            />
-          ) : (
-            <PharmaSideNav
-              activeItem={activeItem}
-              setActiveItem={setActiveItem}
-              isMobile={false}
-              closeSidebar={() => { }}
-            />
-          )}
-        </div>
-
-        {/* Mobile Sidebar Overlay */}
-        {sidebarOpen && (
-          <div className="lg:hidden fixed inset-0 z-50">
-            {/* Dark Overlay */}
-            <div
-              className="absolute inset-0 bg-black bg-opacity-50"
-              onClick={closeSidebar}
-            ></div>
-
-            {/* Sidebar */}
-            <div className="absolute left-0 top-0 h-full w-1/2 bg-white shadow-lg">
-              <div className="flex justify-end p-4">
-                <button
-                  onClick={closeSidebar}
-                  className="p-1 rounded-md hover:bg-gray-100"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              {getSidebarComponent()}
-            </div>
-          </div>
-        )}
-
-        {/* Content Area */}
-        <Drugs
-          activeItem={activeItem}
-          role={role}
-          toggleSidebar={toggleSidebar}
-        />
-
-        {/* Role Switcher (Demo purposes) */}
-        <div className="fixed bottom-4 right-4">
-          <select
-            value={role}
-            onChange={(e) => {
-              setRole(e.target.value);
-              setActiveItem('dashboard'); // Reset to dashboard when switching roles
-            }}
-            className="bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-lg"
-          >
-            <option value="admin">Admin</option>
-            <option value="pharmacist">Pharmacist</option>
-          </select>
-        </div>
-      </div>
 
 
       -----------------------durg page-----------------------------------

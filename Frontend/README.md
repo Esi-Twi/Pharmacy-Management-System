@@ -33,13 +33,13 @@ Reports & Analytics
     GET /api/pharmacist/sales → get all sales (filter by date, drug)
     GET /api/pharmacist/sales/:id → get sale by ID (receipt lookup)
 
-Inventory (Limited)
-    PATCH /api/pharmacist/drugs/:id/stock → update stock quantity
-    GET /api/pharmacist/drugs/search?name=xxx → search drugs
-    GET /api/pharmacist/drugs/available → list available drugs
+  Inventory (Limited)
+      PATCH /api/pharmacist/drugs/:id/stock → update stock quantity
+      GET /api/pharmacist/drugs/search?name=xxx → search drugs
+      GET /api/pharmacist/drugs/available → list available drugs
 
-Sales History
-    GET /api/pharmacist/history → get sales history
+  Sales History
+      GET /api/pharmacist/history → get sales history
 
 🔔 General Routes (/api/general) (Both roles)
     GET /api/general/notifications → fetch all notifications
