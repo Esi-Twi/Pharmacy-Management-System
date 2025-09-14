@@ -35,7 +35,7 @@ exports.addStaff = async (req, res) => {
     }
 }
 
-exports.updateStaff = async (req, res) => {
+exports.updateStaffRole = async (req, res) => {
     try {
         const {id} = req.params
 
@@ -61,9 +61,14 @@ exports.updateProfile = async(req,res) => {
     const {id} = req.params
 
     try {
+        const {role, name, phone, location} = req.body
+
+        
+        
+
         const staff = await Staff.findByIdAndUpdate(
             id, {
-                
+
             }, {
                 new: true, 
                 runValidators: true

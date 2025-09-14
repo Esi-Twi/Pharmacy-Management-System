@@ -24,8 +24,8 @@ function Profile() {
     location: "New York, NY"
   });
 
-  const [user, setUser] = useState(originalUser);
-  const [editedUser, setEditedUser] = useState(originalUser);
+  const [user, setUser] = useState(userData);
+  const [editedUser, setEditedUser] = useState(userData);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -51,12 +51,6 @@ function Profile() {
     // Name validation
     if (!editedUser.name || editedUser.name.trim().length < 2) {
       newErrors.name = 'Name must be at least 2 characters long';
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!editedUser.email || !emailRegex.test(editedUser.email)) {
-      newErrors.email = 'Please enter a valid email address';
     }
 
     // Phone validation (optional but must be valid if provided)
@@ -118,7 +112,6 @@ function Profile() {
       const updatedUser = {
         ...editedUser,
         name: editedUser.name.trim(),
-        email: editedUser.email.trim().toLowerCase(),
         phone: editedUser.phone?.trim(),
         location: editedUser.location?.trim(),
         updatedAt: new Date().toISOString()
@@ -214,14 +207,6 @@ function Profile() {
       {/* <Button asChild>
         <Link href="/login">jon the party for here ooo</Link>
       </Button> */}
-
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
-        <div className="flex items-center justify-between">
-
-        </div>
-      </div>
-
-
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-red-100 p-4 md:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
 
@@ -254,12 +239,12 @@ function Profile() {
 
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center mx-auto shadow-lg">
-                      <User size={48} className="text-gray-600" />
+                    <div className="w-24 h-24 md:w-32 md:h-32 avatar rounded-full flex items-center justify-center mx-auto shadow-lg">
+                      <h1>{userData.name[0]}</h1>
                     </div>
                     {user.verified && (
-                      <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-2 shadow-lg">
-                        <CheckCircle size={20} className="text-white" />
+                      <div className={`absolute -top-2 -right-2 ${userData.verified && 'bg-green-500'} rounded-full p-2 shadow-lg`}>
+                        {userData.verified && <CheckCircle size={20} className="text-white" />}
                       </div>
                     )}
                   </div>
@@ -267,48 +252,22 @@ function Profile() {
                   <div className="mb-6">
                     {/* Name Field */}
                     <div className="mb-2">
-                      {isEditing ? (
-                        <div>
-                          <input
-                            type="text"
-                            value={editedUser.name}
-                            onChange={(e) => handleInputChange('name', e.target.value)}
-                            className={`text-xl md:text-2xl font-bold text-gray-800 text-center w-full border-b-2 ${errors.name ? 'border-red-300' : 'border-blue-300'} focus:border-blue-500 outline-none bg-transparent`}
-                            placeholder="Enter your name"
-                          />
-                          {errors.name && (
-                            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                          )}
-                        </div>
-                      ) : (
-                        <h1 className="text-xl md:text-2xl font-bold text-gray-800">{user.name}</h1>
-                      )}
+                      <h1 className="text-xl md:text-2xl font-bold text-gray-800">{userData.name}</h1>
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-2 mb-4">
-                      {isEditing ? (
-                        <select
-                          value={editedUser.role}
-                          onChange={(e) => handleInputChange('role', e.target.value)}
-                          className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(editedUser.role)} bg-white cursor-pointer`}
-                        >
-                          <option value="Pharmacist">Pharmacist</option>
-                          <option value="Admin">Admin</option>
-                        </select>
-                      ) : (
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(user.role)}`}>
-                          <Shield size={12} className="inline mr-1" />
-                          {user.role}
-                        </span>
-                      )}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(userData.role)}`}>
+                        <Shield size={12} className="inline mr-1" />
+                        {userData.role}
+                      </span>
 
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(user.status)}`}>
-                        {user.status === 'active' ? (
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(userData.status)}`}>
+                        {userData.status === 'active' ? (
                           <CheckCircle size={12} className="inline mr-1" />
                         ) : (
                           <XCircle size={12} className="inline mr-1" />
                         )}
-                        {user.status}
+                        {userData.status}
                       </span>
                     </div>
 
@@ -316,88 +275,25 @@ function Profile() {
                       {/* Email Field */}
                       <div className="flex items-center justify-center">
                         <Mail size={14} className="mr-2 flex-shrink-0" />
-                        {isEditing ? (
-                          <div className="flex-1">
-                            <input
-                              type="email"
-                              value={editedUser.email}
-                              onChange={(e) => handleInputChange('email', e.target.value)}
-                              className={`border-b ${errors.email ? 'border-red-300' : 'border-blue-300'} focus:border-blue-500 outline-none bg-transparent text-center w-full`}
-                              placeholder="Enter email"
-                            />
-                            {errors.email && (
-                              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="break-all">{user.email}</span>
-                        )}
+                        <span className="break-all">{userData.email}</span>
                       </div>
 
                       {/* Phone Field */}
                       <div className="flex items-center justify-center">
                         <Phone size={14} className="mr-2 flex-shrink-0" />
-                        {isEditing ? (
-                          <div className="flex-1">
-                            <input
-                              type="text"
-                              value={editedUser.phone || ''}
-                              onChange={(e) => handleInputChange('phone', e.target.value)}
-                              className={`border-b ${errors.phone ? 'border-red-300' : 'border-blue-300'} focus:border-blue-500 outline-none bg-transparent text-center w-full`}
-                              placeholder="Enter phone number"
-                            />
-                            {errors.phone && (
-                              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
-                            )}
-                          </div>
-                        ) : (
-                          <span>{user.phone || 'Not provided'}</span>
-                        )}
+                        <span>{userData.phone || 'Not provided'}</span>
                       </div>
 
                       {/* Location Field */}
                       <div className="flex items-center justify-center">
                         <MapPin size={14} className="mr-2 flex-shrink-0" />
-                        {isEditing ? (
-                          <div className="flex-1">
-                            <input
-                              type="text"
-                              value={editedUser.location || ''}
-                              onChange={(e) => handleInputChange('location', e.target.value)}
-                              className={`border-b ${errors.location ? 'border-red-300' : 'border-blue-300'} focus:border-blue-500 outline-none bg-transparent text-center w-full`}
-                              placeholder="Enter location"
-                            />
-                            {errors.location && (
-                              <p className="text-red-500 text-xs mt-1">{errors.location}</p>
-                            )}
-                          </div>
-                        ) : (
-                          <span>{user.location || 'Not provided'}</span>
-                        )}
+                        <span>{userData.location || 'Not provided'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-3 justify-center">
-                    {isEditing ? (
-                      <div className="flex gap-3 justify-center flex-wrap">
-                        <button
-                          onClick={handleSave}
-                          disabled={isLoading || !hasChanges}
-                          className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {isLoading ? <Loader className="animate-spin" size={16} /> : <Save size={16} />}
-                          {isLoading ? 'Saving...' : 'Save Changes'}
-                        </button>
-                        <button
-                          onClick={handleCancel}
-                          disabled={isLoading}
-                          className="bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300 transition-all duration-200 disabled:opacity-50"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
+                    {!isEditing &&
                       <button
                         onClick={handleEdit}
                         disabled={isLoading}
@@ -406,7 +302,7 @@ function Profile() {
                         <Edit size={16} />
                         Edit Profile
                       </button>
-                    )}
+                    }
 
                     {isEditing && hasChanges && (
                       <p className="text-xs text-gray-500 text-center">
@@ -416,6 +312,67 @@ function Profile() {
                   </div>
                 </div>
               </div>
+
+{/* form for editing personal data */}
+              {isEditing && <div className="bg-white rounded-lg shadow-sm border mt-5 border-gray-200 p-4 lg:p-6">
+                <h1 className='mb-4 font-bold text-blue-600'>Edit your Personal Info</h1>
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    value={editedUser.name || ''}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={`border py-1 px-2 ${errors.phone ? 'border-red-300' : 'border-gray-200'} focus:border-gray-800 outline-none bg-transparent w-full`}
+                    placeholder="Enter name"
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    value={editedUser.phone || ''}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    className={`border mt-3 py-1 px-2 ${errors.phone ? 'border-red-300' : 'border-gray-200'} focus:border-gray-800 outline-none bg-transparent w-full`}
+                    placeholder="Enter phone number"
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                  )}
+                </div>
+
+                <div className="flex-1 mt-3">
+                  <input
+                    type="text"
+                    value={editedUser.location || ''}
+                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    className={`border py-1 px-2 ${errors.location ? 'border-red-300' : 'border-gray-200'} focus:border-gray-800 outline-none bg-transparent w-full`}
+                    placeholder="Enter location"
+                  />
+                  {errors.location && (
+                    <p className="text-red-500 text-xs mt-1">{errors.location}</p>
+                  )}
+                </div>
+
+                <div className="flex gap-3 mt-4 justify-center flex-wrap">
+                  <button
+                    onClick={handleSave}
+                    disabled={isLoading || !hasChanges}
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? <Loader className="animate-spin" size={16} /> : <Save size={16} />}
+                    {isLoading ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={isLoading}
+                    className="bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300 transition-all duration-200 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>}
             </div>
 
             {/* Account Information & Activity */}
@@ -432,15 +389,15 @@ function Profile() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
                       <span className="font-medium text-gray-600">Account Status</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(user.status)}`}>
-                        {user.status}
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(userData.status)}`}>
+                        {userData.status}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
                       <span className="font-medium text-gray-600">Email Verified</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${user.verified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {user.verified ? 'Verified' : 'Unverified'}
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${userData.verified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {userData.verified ? 'Verified' : 'Unverified'}
                       </span>
                     </div>
                   </div>
@@ -448,15 +405,15 @@ function Profile() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
                       <span className="font-medium text-gray-600">Role</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(user.role)}`}>
-                        {user.role}
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(userData.role)}`}>
+                        {userData.role}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
                       <span className="font-medium text-gray-600">Member Since</span>
                       <span className="text-sm font-medium text-gray-700">
-                        {formatDate(user.createdAt)}
+                        {formatDate(userData.createdAt)}
                       </span>
                     </div>
                   </div>
@@ -515,20 +472,6 @@ function Profile() {
           </div>
         </div>
       </div>
-
-
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600">1234</p>
-            <p className="text-2xl lg:text-3xl font-bold text-gray-900 mt-2">2353423</p>
-          </div>
-          <div className={`p-3 rounded-lg`}>
-            <i className='bi bi-medicine text-xl'></i>
-          </div>
-        </div>
-      </div>
-
     </div>
   )
 }

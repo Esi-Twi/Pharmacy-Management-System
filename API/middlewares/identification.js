@@ -10,11 +10,11 @@ exports.identifier = async (req, res, next) => {
     }
 
     if (!token) {
-        return res.status(400).json({ success: false, msg: 'Unauthorized' })
+        return res.status(401).json({ success: false, msg: 'Unauthorized' })
     }
 
     try {
-        const userToken = token.split(' ')[1]
+        const userToken = token.startsWith('Bearer ') ? token.split(' ')[1] : token
         const jwtVerified = jwt.verify(userToken, process.env.JWT_SECRET)
         if(jwtVerified) {
             req.user = jwtVerified

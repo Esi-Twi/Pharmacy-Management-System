@@ -60,6 +60,7 @@ function LogIn() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                closeButton: true
             });
         }
     }

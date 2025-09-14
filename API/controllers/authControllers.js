@@ -44,7 +44,6 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { email, password } = req.body
 
-    //check if user is not deleted or inactive before login
     try {
         if (!email || !password) {
             return res.status(400).json({ success: false, msg: 'Email and Password is required' })
@@ -89,12 +88,13 @@ exports.login = async (req, res) => {
         return res.cookie('Authorization', 'Bearer ' + token, {
             expiresIn: new Date(Date.now() + 8 * 3600000), 
             httpOnly: process.env.NODE_ENV == 'production', 
-            secure: process.env.NODE_ENV == 'production',
+            secure: false,
+            // secure: process.env.NODE_ENV == 'production',
         }).json({success: true, token, user: existingUser, msg: 'logged in successfully!'})
 
 
     } catch (error) {
-        return console.log(error)
+        return res.status(500).json({success: false, msg: 'Something went wrong', error: error.message})
     }
 
 }

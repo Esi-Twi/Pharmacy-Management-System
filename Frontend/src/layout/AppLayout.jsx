@@ -1,13 +1,10 @@
-import React, {useState, useEffect} from 'react'
-// import PharmaSideNav from '../Pharmacist/PharmaSideNav'
-// import AdminSideNav from '../Admin/AdminSideNav'
+import React, { useState, useEffect } from 'react'
 import PharmaSideNav from '../pages/Pharmacist/PharmaSideNav'
 import AdminSideNav from '../pages/Admin/AdminSideNav'
+import api from '../api/axios'
 
-
-
-import Drugs from '../pages/Pharmacist/Drugs'
-import { Link , Outlet} from 'react-router-dom'
+import { Link, Navigate, Outlet } from 'react-router-dom'
+import { toast } from 'sonner'
 
 function AppLayout() {
     const { role, name } = JSON.parse(localStorage.getItem('user'))
@@ -34,6 +31,33 @@ function AppLayout() {
 
     const openSidebar = () => setSidebarOpen(true);
     const closeSidebar = () => setSidebarOpen(false);
+
+
+    const logout = async() => {
+        try {
+            await api.get('/api/auth/logout', { withCredentials: true })
+            localStorage.clear()
+
+            console.log(localStorage.getItem('user'), localStorage.getItem('token'));
+
+
+            // Navigate('/login')
+        } catch (error) {
+            toast.error("Logout failed!!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                closeButton: true
+            });
+            console.log(error);
+            
+        }
+
+    }
 
     return (
         <div>
@@ -136,7 +160,7 @@ function AppLayout() {
                                                     <span>Help & Support</span>
                                                 </button>
                                                 <div className="border-t border-gray-200 mt-2 pt-2">
-                                                    <button className="flex items-center space-x-3 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50">
+                                                    <button onClick={() => logout()} className="flex items-center space-x-3 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50">
                                                         <i className="bi bi-box-arrow-right text-red-500"></i>
                                                         <span>Sign Out</span>
                                                     </button>

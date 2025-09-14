@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema({
         }, 
         default: 'Pharmacist'
     },
+    phone: {
+        type: String, 
+        trim: true, 
+    },
+    location: {
+        type: String, 
+        trim: true, 
+    },
     status: { 
         type: String, 
         enum: {
@@ -42,7 +50,7 @@ const userSchema = new mongoose.Schema({
     deleted: {
         type: Boolean, 
         default: false
-    }
+    }, 
 }, {
     timestamps: true
 })

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import DataTable from '../../components/DataTable'
+
 
 function AllMedicines() {
+
+
+
 
  const recentOrders = [
     { id: '#001', customer: 'John Doe', amount: '₹1,250', status: 'Completed', date: '2025-01-10' },
@@ -20,8 +25,29 @@ function AllMedicines() {
     }
   };
 
+  const handleView = (order) => {
+    console.log("Viewing order:", order);
+  };
+
+  const handleEdit = (order) => {
+    console.log("Editing order:", order);
+  };
+
+  const handleDelete = (order) => {
+    console.log("Deleting order:", order);
+  };
+
   return (
     <div>
+
+      <DataTable
+        fetchData={recentOrders}
+        nameKey="customer" // backend key for Name
+        categoryKey="category" // backend key for Category
+        onView={handleView}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
           <div className="flex items-center justify-between mb-6">
