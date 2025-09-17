@@ -8,7 +8,8 @@ router.route('/')
     .post(identifier, authorizedRoles("Admin"), addStaff)
 
 router.route('/:id')
-    .patch(identifier, authorizedRoles("Admin", "Pharmacist"), updateStaffRole, updateProfile)
+    .patch(identifier, authorizedRoles("Admin", "Pharmacist"), updateProfile)
+    .patch(identifier, authorizedRoles("Admin"), updateStaffRole)
     .delete(identifier, authorizedRoles("Admin"), deleteStaff)
 
 

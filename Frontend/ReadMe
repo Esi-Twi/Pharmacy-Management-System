@@ -6,7 +6,7 @@
 
 * admin can add, updated, delete drug
 * admin, pharmacist can get drugs
-
+* staff can update profile data
 
 
 ### completed frontend functions

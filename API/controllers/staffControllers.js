@@ -5,7 +5,7 @@ const { generateVerificationToken } = require('../utils/generateVerificationToke
 //     PATCH /api/admin/staff/:id/status → activate/deactivate staff
 
 exports.getAllStaffs = async (req, res) => {
-    const staffs = await Staff.find({deleted: false}) //test this again
+    const staffs = await Staff.find({ deleted: false }) //test this again
     res.status(200).json({ success: true, no: staffs.length, staffs })
 }
 
@@ -22,13 +22,13 @@ exports.addStaff = async (req, res) => {
         const verificationToken = generateVerificationToken()
 
         const staff = Staff.create({
-            email, 
-            role, 
-            verificationToken, 
+            email,
+            role,
+            verificationToken,
             verificationTokenValidation: Date.now() + 24 * 60 * 60 * 1000 //24hrs
         })
 
-        res.status(201).json({success: false, msg: 'Staff created successfully!!', staff})
+        res.status(201).json({ success: false, msg: 'Staff created successfully!!', staff })
 
     } catch (error) {
         res.status(400).json({ success: false, error })
@@ -37,13 +37,14 @@ exports.addStaff = async (req, res) => {
 
 exports.updateStaffRole = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
+        res.json({msg:"update staff role", id});
+        
 
         //admin only updates role and status 
-        //pharmacist only updtes, name, password, verified
 
     } catch (error) {
-        res.status(400).json({success: false, error})
+        res.status(400).json({ success: false, error })
     }
 }
 
@@ -51,30 +52,32 @@ exports.deleteStaff = async (req, res) => {
     const { id } = req.params
 
     const staff = await Staff.findByIdAndUpdate(
-        id, {deleted: true}, {new: true}
+        id, { deleted: true }, { new: true }
     )
 
-    res.status(200).json({success: true, msg: "Staff deleted successfully!!", staff})
-} 
+    res.status(200).json({ success: true, msg: "Staff deleted successfully!!", staff })
+}
 
-exports.updateProfile = async(req,res) => {
-    const {id} = req.params
+exports.updateProfile = async (req, res) => {
+    const { id } = req.params
 
     try {
-        const {role, name, phone, location} = req.body
+        const {name, phone, location } = req.body
 
-        
-        
-
-        const staff = await Staff.findByIdAndUpdate(
-            id, {
-
-            }, {
-                new: true, 
-                runValidators: true
+        if (name) {
+            if (!name || !phone || !location) {
+                return res.status(400).json({ successs: false, msg: 'Name, phone and location is required!' })
             }
-        )
+
+            const staff = await Staff.findByIdAndUpdate(
+                id, req.body, { new: true }
+            )
+            return res.status(200).json({success: true, msg: 'Profile updated successfully!!', staff})
+        }
+
     } catch (error) {
-        res.status(400).json({success: false, error})
+        res.status(400).json({ success: false, error })
+        console.log(error);
+        
     }
 }
