@@ -19,7 +19,7 @@ function App() {
 
   return (
     <>
-      <Toaster position="top-right" richColors toastOptions={{style: {fontSize: "18px"}}}/>
+      <Toaster position="top-right" closeButton={true} richColors toastOptions={{style: {fontSize: "18px"}}}/>
 
       <AuthProvider>
         {/* <Router> */}

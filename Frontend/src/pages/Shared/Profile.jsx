@@ -7,6 +7,15 @@ import { User, Mail, Shield, Clock, CheckCircle, XCircle, Edit, Save, Phone, Map
 function Profile() {
   const userData = JSON.parse(localStorage.getItem('user'))
 
+  const fetchData  = () => {
+    console.log(user._id);
+    
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
   console.log(userData);
 
 

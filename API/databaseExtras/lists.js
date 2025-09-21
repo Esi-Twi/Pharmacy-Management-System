@@ -5,8 +5,6 @@ exports.drugCategories = [
   "Pain Killers",
   "Fever Medicines",
   "Cough & Cold Medicines",
-  "Blood Pressure Medicines",
-  "Diabetes Medicines",
   "Vitamins & Blood Tonics",
   "Fungal Infection Medicines",
   "Dewormers",

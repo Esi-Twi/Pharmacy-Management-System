@@ -22,6 +22,16 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       ]
     },
     {
+      id: 'staff',
+      icon: 'bi-person-badge',
+      label: 'Staff',
+      submenu: [
+        { label: 'All Staff', page: '/staff' },
+        { label: 'Add Staff', page: '/staff/add' },
+        { label: 'Staff Roles', page: '/staff/roles' }
+      ]
+    },
+    {
       id: 'customer',
       icon: 'bi-people',
       label: 'Customer',
@@ -95,16 +105,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       label: 'Tax',
       page: '/tax'
     },
-    {
-      id: 'staff',
-      icon: 'bi-person-badge',
-      label: 'Staff',
-      submenu: [
-        { label: 'All Staff', page: '/staff' },
-        { label: 'Add Staff', page: '/staff/add' },
-        { label: 'Staff Roles', page: '/staff/roles' }
-      ]
-    },
+    
       {
       id: 'account',
       icon: 'bi-person',

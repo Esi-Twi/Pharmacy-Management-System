@@ -81,3 +81,16 @@ exports.updateProfile = async (req, res) => {
         
     }
 }
+
+exports.getStaff = async(req,res) => {
+    const {id} = req.params
+    try {
+        const staff = await Staff.findById(id)
+
+        res.json({staff})
+        
+    } catch (error) {
+        console.log('Error in get data route' + error);
+        return res.status(500).json({success: false, msg: 'Something went wrong', error: error.message})
+    }
+}

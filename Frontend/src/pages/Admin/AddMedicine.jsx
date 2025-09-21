@@ -1,132 +1,189 @@
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form';
+import Select from 'react-select'
+import Swal from 'sweetalert2'
+import { useDrugsStore } from '../../store/useDrugsStore'
+import { Loader2 } from 'lucide-react'
 
 function AddMedicine() {
-  const [errors, setErrors] = useState({});
-  const errorMessage = ''
-  const [data, setData] = useState([{
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    form: '',
+    batch_number: '',
+    expiry_date: '',
+    manufacture_date: '',
+    quantity: '',
+    purchase_price: '',
+    selling_price: '',
+  })
+  const { isAddingDrug, addDrugFunction } = useDrugsStore()
 
-  }]);
-  const {register, handleSubmit, reset} = useForm()
+  const drugCategories = [
+    { label: "Malaria Medicines", value: "Malaria Medicines" },
+    { label: "Antibiotics", value: "Antibiotics" },
+    { label: "Pain Killers", value: "Pain Killers" },
+    { label: "Fever Medicines", value: "Fever Medicines" },
+    { label: "Cough & Cold Medicines", value: "Cough & Cold Medicines" },
+    { label: "Vitamins & Blood Tonics", value: "Vitamins & Blood Tonics" },
+    { label: "Dewormers", value: "Dewormers" },
+    { label: "Stomach & Ulcer Medicines", value: "Stomach & Ulcer Medicines" },
+    { label: "Family Planning Medicines", value: "Family Planning Medicines" },
+    { label: "Skin Creams & Ointments", value: "Skin Creams & Ointments" },
+    { label: "Eye & Ear Medicines", value: "Eye & Ear Medicines" },
+    { label: "ORS & Rehydration", value: "ORS & Rehydration" },
+  ]
 
-    const validateForm = () => {
-    const newErrors = {};
+  const drugForm = [
+    { label: "Tablet", value: "Tablet" },
+    { label: "Capsule", value: "Capsule" },
+    { label: "Syrup", value: "Syrup" },
+    { label: "Suspension", value: "Suspension" },
+    { label: "Injection", value: "Injection" },
+    { label: "Cream", value: "Cream" },
+    { label: "Ointment", value: "Ointment" },
+    { label: "Gel", value: "Gel" },
+    { label: "Lotion", value: "Lotion" },
+    { label: "Drops", value: "Drops" },
+    { label: "Suppository", value: "Suppository" },
+  ]
 
-    // Name validation
-    if (!editedUser.name || editedUser.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters long';
-    }
-
-    // Phone validation (optional but must be valid if provided)
-    if (editedUser.phone && editedUser.phone.trim()) {
-      const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
-      if (!phoneRegex.test(editedUser.phone.replace(/\s/g, ''))) {
-        newErrors.phone = 'Please enter a valid phone number';
-      }
-    }
-
-    // Location validation (optional)
-    if (editedUser.location && editedUser.location.trim().length > 100) {
-      newErrors.location = 'Location must be less than 100 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  /*
-  const drugSchema = new mongoose.Schema({
-    name: {
-        type: String, 
-        required: [true, 'Name of drug is required'], 
-        trim: true
-    }, 
-    category: {
-        type: String, 
-        enum: {
-            values:  drugCategories, 
-            messages: '{VALUE} is not supported'
-        },
-        required: [true, 'Drug category is required'], 
-    },
-    form: {
-        type: String, 
-        enum: {
-            values: drugsForm,
-            messages: '{VALUE} is not supported'
-        }
-    }, 
-    batch_number: {
-        type: String, 
-        required: [true, 'Batch number is required'], 
-        trim: true
-    },
-    expiry_date: {
-        type: Date, 
-        required: [true, 'Expiry date is required']
-    }, 
-     manufacture_date: {
-        type: Date, 
-        required: [true, 'Manufacture date is required']
-    }, 
-    quantity: {
-        type: Number, 
-        required: [true, 'Quantity of drug is required'], 
-    }, 
-    purchase_price: {
-        type: Number, 
-        required: [true, 'Purchase Price is required']
-    }, 
-    selling_price: {
-        type: Number, 
-        required: [true, 'Selling Price is required']
-    }, 
-},
-  */
-
-
-  const handleInputChange = (field, value) => {
-    setData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-
-     // Clear specific field error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: undefined
-      }));
-    }
-  };
-
-  const addDrug = () => {
+  const addDrug = (e) => {
     e.preventDefault()
 
-    console.log('submit add Data');
-    
+    const hasEmptyField = Object.values(formData).some(value => value === '');
+    if (hasEmptyField) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Attention Please',
+        text: 'All fields are required'
+      });
+      return;
+    }
+
+    addDrugFunction(formData)
+
+    // setFormData({
+    //   name: '',
+    //   category: '',
+    //   form: '',
+    //   batch_number: '',
+    //   expiry_date: '',
+    //   manufacture_date: '',
+    //   quantity: '',
+    //   purchase_price: '',
+    //   selling_price: '',
+    // })
+
   }
 
   return (
-    <div className='flex items-center justify-start pt-12 pl-12'>
+    <div className='flex items-center justify-start pt-12 pl-12 pr-5'>
 
-      <div className="bg-white rounded-lg w-4/5 shadow-lg border border-gray-200 px-4 py-6 lg:p-6">
+      <div className="bg-white rounded-lg w-full xl:w-4/5 shadow-lg  border border-gray-200 px-4 py-6 lg:p-6">
         <h1 className='text-2xl font-bold text-blue-700 mb-5'>Add Medicine</h1>
 
-        <form onSubmit={handleSubmit(addDrug)}>
-          <div className="flex-1 flex gap-0 flex-col">
-            <label>Name of Medicine</label>
-            <input type="text" {...register("name")}
-              className={`border mt-1 md:w-2/5 py-1 px-2 ${errors.phone ? 'border-red-300' : 'border-gray-400'} focus:border-gray-800 outline-none bg-transparent w-full`}
-            />
-           
+        <form onSubmit={addDrug}>
+          <div className='grid md:grid-cols-2 gap-5'>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Name of Medicine</label>
+              <input
+                type="text"
+                value={formData.name}   
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Category</label>
+              <Select
+                className='lg:w-4/5'
+                options={drugCategories}
+                value={drugCategories.find(option => option.value === formData.category) || null} 
+                onChange={(selected) => setFormData({ ...formData, category: selected.value })}
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Medicine's form</label>
+              <Select
+                className='lg:w-4/5'
+                options={drugForm}
+                value={drugForm.find(option => option.value === formData.form) || null} 
+                onChange={(selected) => setFormData({ ...formData, form: selected.value })}
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Batch Number</label>
+              <input
+                type="text"
+                value={formData.batch_number}  
+                onChange={(e) => setFormData({ ...formData, batch_number: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Date Manufactured</label>
+              <input
+                type="date"
+                value={formData.manufacture_date}  
+                onChange={(e) => setFormData({ ...formData, manufacture_date: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Expiry Date</label>
+              <input
+                type="date"
+                value={formData.expiry_date}  
+                onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Quantity</label>
+              <input
+                type="number"
+                value={formData.quantity}  
+                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Purchase Price (GHS)</label>
+              <input
+                type="text"
+                value={formData.purchase_price}  
+                onChange={(e) => setFormData({ ...formData, purchase_price: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
+            <div className="flex-1 flex gap-0 flex-col mb-3">
+              <label>Selling Price (GHS)</label>
+              <input
+                type="text"
+                value={formData.selling_price}  
+                onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
+                className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
+              />
+            </div>
+
           </div>
 
-           {errors.phone && (
-              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
-            )}
-
-          <button className='bg-blue-700 rounded text-white px-9 py-1 mt-5'>Add Medicine</button>
+          <button className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isAddingDrug}>
+            {isAddingDrug ? (
+              <div>
+                <Loader2 /> Adding ...
+              </div>) : "Add Medicine"
+            }
+          </button>
         </form>
       </div>
     </div>
