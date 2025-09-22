@@ -1,8 +1,17 @@
-import React from 'react'
+import { useDrugsStore } from "../../store/useDrugsStore"
+
 
 function ViewMore() {
+  const {drugToViewMore} = useDrugsStore()
+
+  console.log(drugToViewMore);
+  
+
   return (
-    <div>ViewMore</div>
+    <div>
+      
+      
+      ViewMore</div>
   )
 }
 

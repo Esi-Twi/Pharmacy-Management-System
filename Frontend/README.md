@@ -1,6 +1,5 @@
 ### -------***routes naming *** -------------
 🔑 Auth Routes (/api/auth)
-    POST /api/auth/login → login (Admin & Pharmacist) ✅ 
     POST /api/auth/register → create account (Admin only)
     GET /api/auth/profile → get user profile
     PUT /api/auth/change-password → update password
@@ -8,17 +7,10 @@
 👤 Admin Routes (/api/admin)
 Staff Management
     POST /api/admin/staff → add staff
-    GET /api/admin/staff → get all staff
-    GET /api/admin/staff/:id → get staff by ID
     PUT /api/admin/staff/:id → update staff role
     PATCH /api/admin/staff/:id/status → activate/deactivate staff
 
-Drug Management
-    POST /api/admin/drugs → add drug
-    PUT /api/admin/drugs/:id → update drug
-    DELETE /api/admin/drugs/:id → delete drug
-    GET /api/admin/drugs → list all drugs
-    GET /api/admin/drugs/:id → get single drug
+Drug Management✅
 
 Reports & Analytics
     GET /api/admin/reports/daily
@@ -81,7 +73,7 @@ Reports & Analytics
 
 *****admin Pages
 -Drug Management Page – add, update, delete, categorize drugs
--Staff Management Page – add/edit pharmacists, cashiers, assign roles
+-Staff Management Page – add/edit pharmacists
 -Analytics Page – sales trends, most sold drugs, revenue overview
 -Report Page / Export Center – generate reports in PDF/Excel/CSV
 
@@ -100,7 +92,6 @@ Reports & Analytics
 ### 👤 Authentication & User Management
 
 * Create staff accounts (pharmacists, cashiers).
-* Update staff info (name, role, contact).
 * Activate/deactivate staff accounts.
 * Assign/revoke roles.
 
@@ -231,10 +222,8 @@ Reports & Analytics
 
 ### 👩‍⚕️ **Staff Management (Admin only)**
 * [ ] Add staff (pharmacist).
-* [ ] Update staff info (name, contact).
 * [ ] Activate/deactivate staff accounts.
 * [ ] Get all staff list.
-* [ ] Get single staff details.
 
 ### 🔔 **Notifications**
 * [ ] Trigger alert when drug is below stock threshold.

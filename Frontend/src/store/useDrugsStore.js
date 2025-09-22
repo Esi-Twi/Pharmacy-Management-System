@@ -6,7 +6,7 @@ export const useDrugsStore = create((set) => ({
     isAddingDrug: false,
     isFetchingDrugs: false,
     drugs: [],
-    drugToViewMore: null, 
+    drugToViewMore: [], 
     isUpdatingDrug: false, 
 
     addDrugFunction: async (data) => {
@@ -32,6 +32,6 @@ export const useDrugsStore = create((set) => ({
         }
     }, 
     viewMore: async (data) => {
-
+        set({drugToViewMore: data})
     }
 }))

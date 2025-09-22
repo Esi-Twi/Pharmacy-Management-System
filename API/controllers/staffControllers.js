@@ -4,23 +4,45 @@ const { generateVerificationToken } = require('../utils/generateVerificationToke
 //     PUT /api/admin/staff/:id → update staff role
 //     PATCH /api/admin/staff/:id/status → activate/deactivate staff
 
+/*
+ -add staff
+ -update staff role 
+ -deactive or activate staff status
+*/
+
 exports.getAllStaffs = async (req, res) => {
-    const staffs = await Staff.find({ deleted: false }) //test this again
+    const staffs = await Staff.find({ deleted: false })
     res.status(200).json({ success: true, no: staffs.length, staffs })
 }
-
 
 exports.addStaff = async (req, res) => {
     try {
         const { email, role } = req.body
 
-        const existingStaff = await Staff.find({ email })
+        const existingStaff = await Staff.find({ email, deleted: false })
         if (existingStaff) {
-            res.status(400).json({ success: false, msg: 'Staff already exists' })
+            return res.status(400).json({ success: false, msg: 'Staff already exists' })
         }
 
-        const verificationToken = generateVerificationToken()
+        //fix this part not working
+        const existingDeletedStaff = await Staff.findOne({ email, deleted: true })
+        if (existingDeletedStaff) {
+            const id = existingDeletedStaff._id
+            const verificationToken = generateVerificationToken()
 
+            const reAdded = await Staff.findOneAndReplace(
+                id, {
+                email,
+                role,
+                verificationToken,
+                verificationTokenValidation: Date.now() + 24 * 60 * 60 * 1000 //24hrs
+            }, { new: true, runValidators: true }
+            )
+            return res.status(201).json({ success: true, msg: 'Staff created successfully!!!', reAdded })
+        }
+
+
+        const verificationToken = generateVerificationToken()
         const staff = Staff.create({
             email,
             role,
@@ -38,8 +60,8 @@ exports.addStaff = async (req, res) => {
 exports.updateStaffRole = async (req, res) => {
     try {
         const { id } = req.params
-        res.json({msg:"update staff role", id});
-        
+        res.json({ msg: "update staff role", id });
+
 
         //admin only updates role and status 
 
@@ -62,7 +84,7 @@ exports.updateProfile = async (req, res) => {
     const { id } = req.params
 
     try {
-        const {name, phone, location } = req.body
+        const { name, phone, location } = req.body
 
         if (name) {
             if (!name || !phone || !location) {
@@ -72,25 +94,29 @@ exports.updateProfile = async (req, res) => {
             const staff = await Staff.findByIdAndUpdate(
                 id, req.body, { new: true }
             )
-            return res.status(200).json({success: true, msg: 'Profile updated successfully!!', staff})
+            return res.status(200).json({ success: true, msg: 'Profile updated successfully!!', staff })
         }
 
     } catch (error) {
         res.status(400).json({ success: false, error })
         console.log(error);
-        
+
     }
 }
 
-exports.getStaff = async(req,res) => {
-    const {id} = req.params
+exports.getStaff = async (req, res) => {
+    const { id } = req.params
     try {
         const staff = await Staff.findById(id)
 
-        res.json({staff})
-        
+        res.json({ staff })
+
     } catch (error) {
         console.log('Error in get data route' + error);
-        return res.status(500).json({success: false, msg: 'Something went wrong', error: error.message})
+        return res.status(500).json({ success: false, msg: 'Something went wrong', error: error.message })
     }
+}
+
+exports.updateStaffStatus = async (req, res) => {
+
 }

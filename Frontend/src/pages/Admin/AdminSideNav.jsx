@@ -26,9 +26,9 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       icon: 'bi-person-badge',
       label: 'Staff',
       submenu: [
+        { label: 'Manage Staffs', page: '/staff' },
         { label: 'Add Staff', page: '/add-staff' },
-        { label: 'Manage Staff', page: '/staff' },
-        { label: 'Update Staff Roles', page: '/update-staff' }
+        { label: 'Update Staff', page: '/update-staff' }
       ]
     },
     {

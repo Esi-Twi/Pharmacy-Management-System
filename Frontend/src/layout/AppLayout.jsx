@@ -4,13 +4,14 @@ import AdminSideNav from '../pages/Admin/AdminSideNav'
 import api from '../api/axios'
 import Loader from '../components/Loader'
 
-import { Link, Navigate, Outlet } from 'react-router-dom'
+import { Link, useNavigate, Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
 
 function AppLayout() {
     const [isLoading, setIsLoading] = useState(false)
     const { role, name } = JSON.parse(localStorage.getItem('user'))
     const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+    const navigate = useNavigate()
 
     const toggleUserDropdown = () => {
         setUserDropdownOpen(!userDropdownOpen);
@@ -40,8 +41,8 @@ function AppLayout() {
             await api.get('/api/auth/logout', { withCredentials: true })
             setIsLoading(true)
             localStorage.clear()
-            
-            Navigate('/login')
+
+            navigate('/login')
             setIsLoading(false)
         } catch (error) {
             toast.error("Logout failed!!", {

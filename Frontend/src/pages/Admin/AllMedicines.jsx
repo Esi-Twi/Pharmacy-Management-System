@@ -7,13 +7,12 @@ import Swal from 'sweetalert2'
 import api from '../../api/axios'
 import { toast } from 'sonner'
 import Select from 'react-select'
-import { Navigate } from 'react-router-dom'
 import { drugCategories, drugForm } from '../../lib/drugDetails'
+import { useNavigate } from 'react-router-dom'
 
 function AllMedicines() {
-  const { isFetchingDrugs, drugs, fetchDrugs, isUpdatingDrug, viewMore, drugToViewMore } = useDrugsStore()
+  const { isFetchingDrugs, drugs, fetchDrugs, isUpdatingDrug, viewMore } = useDrugsStore()
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState([])
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -25,6 +24,7 @@ function AllMedicines() {
     purchase_price: '',
     selling_price: '',
   })
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchDrugs()
@@ -33,11 +33,14 @@ function AllMedicines() {
 
   const handleEdit = (row) => {
     setIsOpen(true)
-    setSelectedUser(row)
+    setFormData(row)
   };
 
   const updateData = (e) => {
     e.preventDefault()
+    const { _id, createdAt, deleted, updatedAt, ...rest } = formData;
+    const id = _id;
+    setFormData(rest)
 
     const hasEmptyField = Object.values(formData).some(value => value === '');
     if (hasEmptyField) {
@@ -49,16 +52,21 @@ function AllMedicines() {
       return;
     }
 
-
-    // console.log(editData);
-
+    api.patch(`/drugs/${id}`, formData)
+    .then(res => {
+        setIsOpen(false)
+    fetchDrugs()
+      toast.success(res.data.msg)
+    }).catch(error => {
+      toast.error(error.response.data.msg || "An error occurred")
+    })
   }
 
   const handleViewMore = (row) => {
-    // navigate()
+    viewMore(row)
+    navigate('/view-more')
   }
 
-  const onClose = () => { }
 
   const handleDelete = (row) => {
     Swal.fire({
@@ -113,16 +121,14 @@ function AllMedicines() {
             )}
             columnRenderers={{
               _id: (_, __, rowIndex) => rowIndex + 1,
-              created_at: (value) => {
+              createdAt: (value) => {
                 if (!value) return "";
-                const d = new Date(value);
-                return d.toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "2-digit",
-                });
-              },
-
+                const d = value instanceof Date ? value : new Date(value);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, "0");
+                const day = String(d.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+              }
             }}
           />
         </div>}
@@ -152,7 +158,7 @@ function AllMedicines() {
                   <label>Name of Medicine</label>
                   <input
                     type="text"
-                    value={selectedUser.name}
+                    value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />
@@ -163,7 +169,7 @@ function AllMedicines() {
                   <Select
                     className='lg:w-4/5'
                     options={drugCategories}
-                    value={drugCategories.find(option => option.value === selectedUser.category) || null}
+                    value={drugCategories.find(option => option.value === formData.category) || null}
                     onChange={(selected) => setFormData({ ...formData, category: selected.value })}
                   />
                 </div>
@@ -173,7 +179,7 @@ function AllMedicines() {
                   <Select
                     className='lg:w-4/5'
                     options={drugForm}
-                    value={drugForm.find(option => option.value === selectedUser.form) || null}
+                    value={drugForm.find(option => option.value === formData.form) || null}
                     onChange={(selected) => setFormData({ ...formData, form: selected.value })}
                   />
                 </div>
@@ -182,7 +188,7 @@ function AllMedicines() {
                   <label>Batch Number</label>
                   <input
                     type="text"
-                    value={selectedUser.batch_number}
+                    value={formData.batch_number}
                     onChange={(e) => setFormData({ ...formData, batch_number: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />
@@ -192,7 +198,7 @@ function AllMedicines() {
                   <label>Date Manufactured</label>
                   <input
                     type="date"
-                    value={selectedUser.manufacture_date}
+                    value={formData.manufacture_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""}
                     onChange={(e) => setFormData({ ...formData, manufacture_date: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />
@@ -202,8 +208,7 @@ function AllMedicines() {
                   <label>Expiry Date</label>
                   <input
                     type="date"
-                    value={selectedUser.expiry_date}
-                    onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
+                    value={formData.expiry_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""} onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />
                 </div>
@@ -212,7 +217,7 @@ function AllMedicines() {
                   <label>Quantity</label>
                   <input
                     type="number"
-                    value={selectedUser.quantity}
+                    value={formData.quantity}
                     onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />
@@ -222,7 +227,7 @@ function AllMedicines() {
                   <label>Purchase Price (GHS)</label>
                   <input
                     type="text"
-                    value={selectedUser.purchase_price}
+                    value={formData.purchase_price}
                     onChange={(e) => setFormData({ ...formData, purchase_price: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />
@@ -232,7 +237,7 @@ function AllMedicines() {
                   <label>Selling Price (GHS)</label>
                   <input
                     type="text"
-                    value={selectedUser.selling_price}
+                    value={formData.selling_price}
                     onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
                     className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
                   />

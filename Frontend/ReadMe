@@ -6,7 +6,9 @@
 
 * admin can add, updated, delete drug
 * admin, pharmacist can get drugs
-* staff can update profile data
+* staff can update profile data except photo successfully
+
+* admin can get all staffs, delete staff
 
 
 ### completed frontend functions
@@ -14,7 +16,7 @@
 * built layout for pages
   * built profile page 
   built add medicine page, can add medicine 
-
+  can update, modify medicine
 
 
 
