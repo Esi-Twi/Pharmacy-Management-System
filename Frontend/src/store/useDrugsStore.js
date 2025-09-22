@@ -4,6 +4,10 @@ import { toast } from 'sonner'
 
 export const useDrugsStore = create((set) => ({
     isAddingDrug: false,
+    isFetchingDrugs: false,
+    drugs: [],
+    drugToViewMore: null, 
+    isUpdatingDrug: false, 
 
     addDrugFunction: async (data) => {
         set({ isAddingDrug: true })
@@ -15,5 +19,19 @@ export const useDrugsStore = create((set) => ({
         } finally {
             set({ isAddingDrug: false })
         }
+    },
+    fetchDrugs: async () => {
+        set({ isFetchingDrugs: true })
+        try {
+            const res = await api.get('/drugs')
+            set({ drugs: res.data.drugs })
+        } catch (error) {
+            toast.error(error.response.data.msg)
+        } finally {
+            set({ isFetchingDrugs: false })
+        }
+    }, 
+    viewMore: async (data) => {
+
     }
 }))

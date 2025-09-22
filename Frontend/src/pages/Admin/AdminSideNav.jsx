@@ -17,7 +17,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       icon: 'bi-capsule',
       label: 'Medicine',
       submenu: [
-        { label: 'All Medicines', page: '/all-meds' },
+        { label: 'Manage Medicines', page: '/all-meds' },
         { label: 'Add Medicine', page: '/add-med' },
       ]
     },
@@ -26,9 +26,9 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       icon: 'bi-person-badge',
       label: 'Staff',
       submenu: [
-        { label: 'All Staff', page: '/staff' },
-        { label: 'Add Staff', page: '/staff/add' },
-        { label: 'Staff Roles', page: '/staff/roles' }
+        { label: 'Add Staff', page: '/add-staff' },
+        { label: 'Manage Staff', page: '/staff' },
+        { label: 'Update Staff Roles', page: '/update-staff' }
       ]
     },
     {

@@ -8,9 +8,18 @@ exports.getAllDrugs = async (req, res) => {
 exports.addNewDrug = async (req, res) => {
     const { name } = req.body
     try {
-        const existingDrug = await Drug.findOne({ name })
-        if (existingDrug) {
+        const existingDrug = await Drug.findOne({ name, deleted: false })
+        if(existingDrug) {
             return res.status(400).json({ success: false, msg: 'Drug already exists!!' })
+        }
+
+        const existingDeletedDrug = await Drug.findOne({ name, deleted: true })
+        if(existingDeletedDrug) {
+            const id = existingDeletedDrug._id
+            const reAdded = await Drug.findOneAndReplace(
+                id, req.body, {new: true, runValidators: true}
+            )
+           return res.status(201).json({success: true, msg: 'Drug is created successfully!!!', reAdded})
         }
 
         const drug = await Drug.create(req.body)
@@ -51,7 +60,7 @@ exports.deleteDrug = async (req, res) => {
             id, {deleted: true}, {new: true}
         )
         
-        res.status(201).json({success: true, msg: 'Drug updated successfully!!', drug})
+        res.status(201).json({success: true, msg: 'Drug deleted successfully!!', drug})
 
     } catch (error) {
         res.status(400).json({success: false, msg: error})   
