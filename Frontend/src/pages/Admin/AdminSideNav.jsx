@@ -32,6 +32,16 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       ]
     },
     {
+      id: 'invoice',
+      icon: 'bi-file-text',
+      label: 'Sales',
+      submenu: [
+        { label: 'All Sales', page: '/sales' },
+        { label: 'Create Invoice', page: '/invoices/create' },
+        { label: 'Pending Invoices', page: '/invoices/pending' }
+      ]
+    },
+    {
       id: 'customer',
       icon: 'bi-people',
       label: 'Customer',
@@ -41,16 +51,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
         { label: 'Customer Groups', page: '/customers/groups' }
       ]
     },
-    {
-      id: 'invoice',
-      icon: 'bi-file-text',
-      label: 'Invoice',
-      submenu: [
-        { label: 'All Invoices', page: '/invoices' },
-        { label: 'Create Invoice', page: '/invoices/create' },
-        { label: 'Pending Invoices', page: '/invoices/pending' }
-      ]
-    },
+    
     {
       id: 'manufacturer',
       icon: 'bi-building',

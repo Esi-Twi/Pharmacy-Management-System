@@ -9,6 +9,7 @@ export const AuthProvider = ({children}) => {
     const login = (userData, jwt) => {
         setUser(userData)
         setToken(jwt)
+
         localStorage.setItem("user", JSON.stringify(userData))
         localStorage.setItem("token", jwt)
     }

@@ -7,8 +7,8 @@
 👤 Admin Routes (/api/admin)
 Staff Management
     POST /api/admin/staff → add staff
-    PUT /api/admin/staff/:id → update staff role
-    PATCH /api/admin/staff/:id/status → activate/deactivate staff
+
+### remove register route and controller after project is done
 
 Drug Management✅
 
@@ -21,17 +21,13 @@ Reports & Analytics
 
 👩‍⚕️ Pharmacist Routes (/api/pharmacist)
     Sales & Billing
-    POST /api/pharmacist/sales → create new sale
     GET /api/pharmacist/sales → get all sales (filter by date, drug)
     GET /api/pharmacist/sales/:id → get sale by ID (receipt lookup)
 
   Inventory (Limited)
-      PATCH /api/pharmacist/drugs/:id/stock → update stock quantity
       GET /api/pharmacist/drugs/search?name=xxx → search drugs
-      GET /api/pharmacist/drugs/available → list available drugs
 
-  Sales History
-      GET /api/pharmacist/history → get sales history
+  Sales History✅
 
 🔔 General Routes (/api/general) (Both roles)
     GET /api/general/notifications → fetch all notifications
@@ -90,22 +86,13 @@ Reports & Analytics
 # 🔑 **Admin Backend Functionalities**
 
 ### 👤 Authentication & User Management
-
-* Create staff accounts (pharmacists, cashiers).
-* Activate/deactivate staff accounts.
-* Assign/revoke roles.
+* Create staff accounts (pharmacists, admins).
 
 ### 💊 Drug Inventory Management
-
-* Add new drugs (with details like price, stock, expiry, category).
-* Update drug details (edit name, price, expiry, etc.).
-* Delete/disable drugs.
-* View all drugs (full inventory).
 * Categorize drugs.
 * Flag expired/near-expiry drugs.
 
 ### 📊 Analytics & Reports
-
 * Generate daily, weekly, and monthly sales reports.
 * Export reports (PDF, Excel, CSV).
 * View sales trends (charts, revenue overview).
@@ -125,10 +112,6 @@ Reports & Analytics
 ---
 
 # 👩‍⚕️ **Pharmacist Backend Functionalities**
-
-* login
-* Update info (name, contact).
-
 ### 💊 Drug Inventory (Limited Scope)
 
 * Update stock levels (e.g., after restock).
@@ -186,17 +169,8 @@ Reports & Analytics
 ### 🔑 **Authentication & Authorization**
 
 * [ ] Register new user (Admin creates Pharmacist accounts).
-* [ ] Login (verify credentials).
-* [ ] Generate JWT token on successful login.
-* [ ] Role-based middleware → restrict access (Admin vs Pharmacist).
-* [ ] update profile info.
-* [ ] Logout (invalidate token or remove session).
 
 ### 💊 **Drug Inventory Management**
-* [ ] Add new drug (name, category, quantity, price, expiry date).
-* [ ] Update drug details (edit name, price, expiry, etc.).
-* [ ] Delete drug (soft delete recommended to keep history).
-* [ ] Get all drugs (paginated list).
 * [ ] Get single drug (by ID).
 * [ ] Search drugs by name or category.
 * [ ] Track stock levels (get low-stock items).
@@ -247,17 +221,13 @@ Reports & Analytics
 
 ✅ 
 
-Perfect 👌 Let’s design the **Pharmacist Sidebar Menu** and decide on the **default page** inside the dashboard.
-
----
-
 # 📌 Pharmacist Sidebar (Dashboard)
 
 Here’s what a **Pharmacist** needs access to:
 
 ### 1. **Dashboard (Default Page ✅)**
 
-* Quick stats (today’s sales, prescriptions handled, stock alerts).
+* Quick stats (today’s sales, stock alerts).
 * Widgets like:
 
   * 🔹 *Today’s total sales*
@@ -266,51 +236,29 @@ Here’s what a **Pharmacist** needs access to:
 
 👉 This should be the **default page** when a pharmacist logs in.
 
----
-
 ### 2. **Sales**
-
 * Search drugs by name/category/barcode.
 * Add to cart.
 * Generate receipt/ticket.
-* Option to handle prescriptions.
-
----
 
 ### 3. **Stock Management**
-
 * Update drug quantities.
 * Mark near-expiry drugs.
 * Auto-flag expired items (cannot be sold).
 
----
-
 ### 4. **Sales History**
-
 * View past transactions handled by **that pharmacist**.
 * Search by date, receipt number, or drug name.
 
----
-
 ### 5. **Notifications**
-
 * Expiry alerts.
 * Low stock alerts (specific to drugs the pharmacist manages).
 
----
-
-### 6. **Profile**
-
-* View/edit personal info (name, email, password).
-
----
+### 6. **Profile**✅
 
 ### 7. **Settings**
-
 * Dark mode toggle.
 * Notification preferences.
-
----
 
 # 📊 Final Sidebar Menu for Pharmacist
 
@@ -322,23 +270,9 @@ Here’s what a **Pharmacist** needs access to:
 6. **Profile**
 7. **Settings**
 
----
-
-👉 So when a **Pharmacist logs in**, they land on:
-**`/dashboard/pharmacist` → Dashboard Page (default)**
-
-Would you like me to also create the **Admin Sidebar** in the same format (menus + default page) so you can compare the two and keep the design consistent?
-
-
-
-Got it 👍 Let’s go **page by page** for the **Pharmacist’s dashboard**, with a short but detailed description of what should be inside each one.
-
----
 
 # 📌 Pharmacist Dashboard Pages & Content
-
 ### 1. **Dashboard (Default Page)**
-
 * Quick overview of **pharmacist’s daily activities**.
 * Key widgets:
 
@@ -348,79 +282,50 @@ Got it 👍 Let’s go **page by page** for the **Pharmacist’s dashboard**, wi
   * 🏆 *Most Sold Drug Today*.
 * Simple charts: today vs yesterday’s sales.
 
----
-
 ### 2. **Sales Page**
-
 * Main selling interface.
 * Features:
-
   * 🔍 *Search box* (by drug name, category, or barcode).
   * 🛒 *Cart system* – add selected drugs.
   * ➕ *Prescription Handling* – attach notes or upload prescriptions.
   * 💵 *Billing & Payment* – calculate totals, apply discounts (if allowed).
   * 🖨️ *Generate Receipt/Ticket*.
 
----
-
 ### 3. **Stock Management**
-
 * Manage inventory at the pharmacist level.
 * Features:
-
   * ✏️ Update stock quantities when new supplies arrive.
   * ⚠️ Mark items as near-expiry.
   * ❌ Auto-flag expired drugs (cannot be sold).
   * 📑 View batch details (expiry date, supplier info).
 
----
-
 ### 4. **Sales History**
-
 * Lookup past transactions by this pharmacist.
 * Features:
-
   * 📅 Filter by date, time, or receipt number.
   * 🧾 View details: drugs sold, quantities, total price, payment type.
   * 🔄 Option to reprint receipts.
 
----
-
 ### 5. **Notifications**
-
 * System alerts relevant to pharmacist.
 * Types of notifications:
-
   * ⚠️ *Drugs near expiry*.
   * 📉 *Stock running low*.
   * 🔔 *System messages* (if admin sends announcements).
 
----
-
 ### 6. **Profile Page**
-
 * Personal information page.
 * Features:
-
-  * 👤 Display name, email, phone.
-  * ✏️ Edit details (except role).
   * 🔑 Change password option.
 
----
-
 ### 7. **Settings**
-
 * Personal preferences for pharmacist.
 * Features:
-
   * 🌙 Dark mode toggle.
   * 🔔 Notification preferences (email / dashboard only).
   * 💻 Account security (2FA if implemented).
 
----
-
 # ✅ Summary
-
 * **Default page:** Dashboard → Quick stats & alerts.
 * **Sales Page:** Handle transactions & receipts.
 * **Stock Management:** Update and manage inventory.
@@ -428,7 +333,3 @@ Got it 👍 Let’s go **page by page** for the **Pharmacist’s dashboard**, wi
 * **Notifications:** Alerts for expiry & stock.
 * **Profile:** Personal details & password.
 * **Settings:** Preferences & dark mode.
-
----
-
-Do you also want me to create the **same detailed breakdown for the Admin’s sidebar pages**, so you’ll have a complete reference for both roles?

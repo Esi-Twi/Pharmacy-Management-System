@@ -1,30 +1,26 @@
 const Staff = require('../models/userModel')
 const { generateVerificationToken } = require('../utils/generateVerificationToken')
 
-//     PUT /api/admin/staff/:id → update staff role
-//     PATCH /api/admin/staff/:id/status → activate/deactivate staff
-
-/*
- -add staff
- -update staff role 
- -deactive or activate staff status
-*/
 
 exports.getAllStaffs = async (req, res) => {
     const staffs = await Staff.find({ deleted: false })
     res.status(200).json({ success: true, no: staffs.length, staffs })
 }
 
+//not done with the processs
 exports.addStaff = async (req, res) => {
     try {
         const { email, role } = req.body
 
-        const existingStaff = await Staff.find({ email, deleted: false })
+        if (!email || !role) {
+            res.status(400).json({ success: false, msg: "Email and password is required" })
+        }
+
+        const existingStaff = await Staff.findOne({ email, deleted: false })
         if (existingStaff) {
             return res.status(400).json({ success: false, msg: 'Staff already exists' })
         }
 
-        //fix this part not working
         const existingDeletedStaff = await Staff.findOne({ email, deleted: true })
         if (existingDeletedStaff) {
             const id = existingDeletedStaff._id
@@ -43,14 +39,13 @@ exports.addStaff = async (req, res) => {
 
 
         const verificationToken = generateVerificationToken()
-        const staff = Staff.create({
+        const newStaff = Staff.create({
             email,
             role,
             verificationToken,
             verificationTokenValidation: Date.now() + 24 * 60 * 60 * 1000 //24hrs
         })
-
-        res.status(201).json({ success: false, msg: 'Staff created successfully!!', staff })
+        return res.status(201).json({ success: true, msg: 'Staff created successfully!!' })
 
     } catch (error) {
         res.status(400).json({ success: false, error })
@@ -58,12 +53,13 @@ exports.addStaff = async (req, res) => {
 }
 
 exports.updateStaffRole = async (req, res) => {
+    const { id } = req.params
     try {
-        const { id } = req.params
-        res.json({ msg: "update staff role", id });
-
-
-        //admin only updates role and status 
+        const { role } = req.body
+        const updated = await Staff.findByIdAndUpdate(
+            id, { role }, { new: true, runValidators: true }
+        )
+        res.status(200).json({ success: true, msg: "Staff role updated successfully!!", updated });
 
     } catch (error) {
         res.status(400).json({ success: false, error })
@@ -72,12 +68,15 @@ exports.updateStaffRole = async (req, res) => {
 
 exports.deleteStaff = async (req, res) => {
     const { id } = req.params
+    try {
+        const staff = await Staff.findByIdAndUpdate(
+            id, { deleted: true }, { new: true }
+        )
 
-    const staff = await Staff.findByIdAndUpdate(
-        id, { deleted: true }, { new: true }
-    )
-
-    res.status(200).json({ success: true, msg: "Staff deleted successfully!!", staff })
+        res.status(200).json({ success: true, msg: "Staff deleted successfully!!", staff })
+    } catch (error) {
+        res.status(400).json({ success: false, error })
+    }
 }
 
 exports.updateProfile = async (req, res) => {
@@ -86,16 +85,14 @@ exports.updateProfile = async (req, res) => {
     try {
         const { name, phone, location } = req.body
 
-        if (name) {
-            if (!name || !phone || !location) {
-                return res.status(400).json({ successs: false, msg: 'Name, phone and location is required!' })
-            }
-
-            const staff = await Staff.findByIdAndUpdate(
-                id, req.body, { new: true }
-            )
-            return res.status(200).json({ success: true, msg: 'Profile updated successfully!!', staff })
+        if (!name) {
+            return res.status(400).json({ successs: false, msg: 'Name is required!' })
         }
+
+        const staff = await Staff.findByIdAndUpdate(
+            id, req.body, { new: true }
+        )
+        return res.status(200).json({ success: true, msg: 'Profile updated successfully!!', staff })
 
     } catch (error) {
         res.status(400).json({ success: false, error })
@@ -118,5 +115,15 @@ exports.getStaff = async (req, res) => {
 }
 
 exports.updateStaffStatus = async (req, res) => {
+    const { id } = req.params
+    try {
+        const { status } = req.body
+        const updated = await Staff.findByIdAndUpdate(
+            id, { status }, { new: true, runValidators: true }
+        )
+        res.status(200).json({ success: true, msg: "update staff role", updated });
 
+    } catch (error) {
+        res.status(400).json({ success: false, error })
+    }
 }

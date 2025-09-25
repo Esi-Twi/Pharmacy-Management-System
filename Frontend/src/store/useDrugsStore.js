@@ -31,7 +31,5 @@ export const useDrugsStore = create((set) => ({
             set({ isFetchingDrugs: false })
         }
     }, 
-    viewMore: async (data) => {
-        set({drugToViewMore: data})
-    }
+    
 }))

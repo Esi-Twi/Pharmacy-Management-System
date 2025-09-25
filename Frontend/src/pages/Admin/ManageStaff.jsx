@@ -6,69 +6,57 @@ import Swal from 'sweetalert2'
 import api from '../../api/axios'
 import { toast } from 'sonner'
 import Select from 'react-select'
-import { drugCategories, drugForm } from '../../lib/drugDetails'
+import { drugCategories } from '../../lib/drugDetails'
 import { useNavigate } from 'react-router-dom'
-import { useStaffStore } from '../..//store/useStaffStore'
+import { useStaffStore } from '../../store/useStaffStore'
 
 
 function ManageStaff() {
- const {  isGettingStaffs, getAllStaffs, allStaffs } = useStaffStore()
+  const { isGettingStaffs, getAllStaffs, allStaffs, isUpdatingStaff, updateRole, updateStatus} = useStaffStore()
   const [isOpen, setIsOpen] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    form: '',
-    batch_number: '',
-    expiry_date: '',
-    manufacture_date: '',
-    quantity: '',
-    purchase_price: '',
-    selling_price: '',
-  })
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false)
+  const [roleUpdate, setRoleUpdate] = useState({})
+  const [statusUpdate, setStatusUpdate] = useState({})
+  const [selectedStaff, setSelectedStaff] = useState({})
+  const roles = [
+    { label: 'Admin', value: "Admin" },
+    { label: 'Pharmacist', value: "Pharmacist" },
+  ]
+  const status = [
+    { label: 'Active', value: "active" },
+    { label: 'Inactive', value: "inactive" },
+  ]
+
   const navigate = useNavigate()
 
   useEffect(() => {
     getAllStaffs()
   }, [])
 
-  const handleUpdateRole = () => {
-
-  }
-
-   const handleUpdateStatus = () => {
-
-  }
-  
-
-  const handleEdit = (row) => {
+  const handleUpdateRole = async (row) => {
     setIsOpen(true)
-    setFormData(row)
-  };
+    setRoleUpdate(row)
+    setSelectedStaff(row)
+    setIsUpdatingRole(true)
+  }
 
-  const updateData = (e) => {
-    e.preventDefault()
-    const { _id, createdAt, deleted, updatedAt, ...rest } = formData;
-    const id = _id;
-    setFormData(rest)
+  const updateRoleFunction = (id, data) => {
+    updateRole(id, data)
+    setIsOpen(false)
+    getAllStaffs()
+  }
 
-    const hasEmptyField = Object.values(formData).some(value => value === '');
-    if (hasEmptyField) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Attention Please',
-        text: 'All fields are required'
-      });
-      return;
-    }
+  const handleUpdateStatus = (row) => {
+    setIsOpen(true)
+    setStatusUpdate(row)
+    setSelectedStaff(row)
+    setIsUpdatingRole(false)
+  }
 
-    api.patch(`/drugs/${id}`, formData)
-    .then(res => {
-        setIsOpen(false)
-    fetchDrugs()
-      toast.success(res.data.msg)
-    }).catch(error => {
-      toast.error(error.response.data.msg || "An error occurred")
-    })
+   const updateStatusFunction = (id, data) => {
+    updateStatus(id, data)
+    setIsOpen(false)
+    getAllStaffs()
   }
 
   const handleViewMore = (row) => {
@@ -80,17 +68,17 @@ function ManageStaff() {
   const handleDelete = (row) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `You want to delete the medicine ${row.name}`,
+      text: `You want to delete the staff ${row.name || row.email}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: "Yes, delete",
       cancelButtonText: "Cancel"
     }).then((result) => {
       if (result.isConfirmed) {
-        api.delete(`/drugs/${row._id}`)
+        api.delete(`/staff/${row._id}`)
           .then(response => {
             toast.success(response.data.msg)
-            fetchDrugs()
+            getAllStaffs()
           })
           .catch(error => {
             toast.error(error.response.data.msg || "An error occurred")
@@ -100,13 +88,11 @@ function ManageStaff() {
   };
 
   const handleReload = () => {
-    fetchDrugs()
+    getAllStaffs()
   };
 
-  
-
   return (
-     <div>
+    <div>
       {isGettingStaffs ? <Loader /> :
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
           <DataTable
@@ -124,7 +110,7 @@ function ManageStaff() {
               <div>
                 <a role='button' onClick={() => handleUpdateRole(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
                   <Edit className='size-4' /> Update Role</a>
-                   <a role='button' onClick={() => handleUpdateStatus(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
+                <a role='button' onClick={() => handleUpdateStatus(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
                   <Edit className='size-4' /> Update Status</a>
                 <a role='button' onClick={() => handleViewMore(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
                   <View className='size-4' /> View More</a>
@@ -134,7 +120,7 @@ function ManageStaff() {
             )}
             columnRenderers={{
               _id: (_, __, rowIndex) => rowIndex + 1,
-              name: (value) => value || 'User' ,
+              name: (value) => value || 'User',
               createdAt: (value) => {
                 if (!value) return "";
                 const d = value instanceof Date ? value : new Date(value);
@@ -154,11 +140,13 @@ function ManageStaff() {
           <div className="fixed inset-0 bg-black/50" />
 
           {/* Modal container */}
-          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-3xl mx-auto z-50">
-            <form className="px-8 py-6" onSubmit={updateData}>
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md mx-auto z-50">
+            <form className="px-8 py-6">
               {/* Header */}
               <div className="flex justify-between items-center border-b pb-1 mb-5">
-                <h2 className="text-xl font-semibold">Edit Medicine</h2>
+                <h2 className="text-xl font-semibold">
+                  Update {isUpdatingRole ? <>{roleUpdate.name || roleUpdate.email} Role</> : <>{statusUpdate.name || statusUpdate.email} Status</>}
+                </h2>
                 <button type="button" className="text-gray-500 hover:text-gray-700" onClick={() => setIsOpen(false)} >
                   <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
                     <rect opacity="0.5" x={6} y="17.3137" width={16} height={2} rx={1} transform="rotate(-45 6 17.3137)" fill="currentColor" />
@@ -167,106 +155,48 @@ function ManageStaff() {
                 </button>
               </div>
 
-              <div className='grid md:grid-cols-2 gap-5'>
+              {isUpdatingRole ? (
                 <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Name of Medicine</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Category</label>
+                  <label>Role</label>
                   <Select
-                    className='lg:w-4/5'
-                    options={drugCategories}
-                    value={drugCategories.find(option => option.value === formData.category) || null}
-                    onChange={(selected) => setFormData({ ...formData, category: selected.value })}
+                    className='mt-1'
+                    options={roles}
+                    value={roles.find(option => option.value === selectedStaff.role) || null}
+                    onChange={(selected) => setRoleUpdate({ role: selected.value })}
                   />
                 </div>
-
+              ) : (
                 <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Medicine's form</label>
+                  <label>Status</label>
                   <Select
-                    className='lg:w-4/5'
-                    options={drugForm}
-                    value={drugForm.find(option => option.value === formData.form) || null}
-                    onChange={(selected) => setFormData({ ...formData, form: selected.value })}
+                    className='mt-1'
+                    options={status}
+                    value={status.find(option => option.value === selectedStaff.status) || null}
+                    onChange={(selected) => setStatusUpdate({ status: selected.value })}
                   />
                 </div>
+              )}
 
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Batch Number</label>
-                  <input
-                    type="text"
-                    value={formData.batch_number}
-                    onChange={(e) => setFormData({ ...formData, batch_number: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Date Manufactured</label>
-                  <input
-                    type="date"
-                    value={formData.manufacture_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""}
-                    onChange={(e) => setFormData({ ...formData, manufacture_date: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Expiry Date</label>
-                  <input
-                    type="date"
-                    value={formData.expiry_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""} onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Quantity</label>
-                  <input
-                    type="number"
-                    value={formData.quantity}
-                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Purchase Price (GHS)</label>
-                  <input
-                    type="text"
-                    value={formData.purchase_price}
-                    onChange={(e) => setFormData({ ...formData, purchase_price: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-                <div className="flex-1 flex gap-0 flex-col mb-3">
-                  <label>Selling Price (GHS)</label>
-                  <input
-                    type="text"
-                    value={formData.selling_price}
-                    onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
-                    className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                  />
-                </div>
-
-              </div>
 
               <div className='flex items-center justify-end pr-5'>
-                <button className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingDrug}>
-                  {isUpdatingDrug ? (
-                    <div>
-                      <Loader2 /> Updating ...
-                    </div>) : "Modify"
-                  }
-                </button>
+                {isUpdatingRole ? (
+                  <button onClick={() => updateRoleFunction(selectedStaff._id, roleUpdate)} className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingStaff}>
+                    {isUpdatingStaff ? (
+                      <div>
+                        <Loader2 /> Updating ...
+                      </div>) : "Update"
+                    }
+                  </button>
+                ) : (
+                  <button onClick={() => updateStatusFunction(selectedStaff._id, statusUpdate)} className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingStaff}>
+                    {isUpdatingStaff ? (
+                      <div>
+                        <Loader2 /> Updating ...
+                      </div>) : "Update"
+                    }
+                  </button>
+                )}
+
               </div>
             </form>
           </div>

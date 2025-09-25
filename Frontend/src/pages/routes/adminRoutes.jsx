@@ -7,6 +7,7 @@ import ManageStaff from '../Admin/ManageStaff'
 import UpdateStaff from '../Admin/UpdateStaff'
 import AddStaff from '../Admin/AddStaff'
 import ViewMore from '../Admin/ViewMore'
+import AllSales from '../Admin/AllSales'
 
 
 function adminRoutes() {
@@ -18,6 +19,7 @@ function adminRoutes() {
         <Route path='staff' element={<ManageStaff/>}/>
         <Route path='update-staff' element={<UpdateStaff/>}/>
         <Route path='view-more' element={<ViewMore/>}/>
+        <Route path='sales' element={<AllSales/>}/>
     </Route>
   )
 }

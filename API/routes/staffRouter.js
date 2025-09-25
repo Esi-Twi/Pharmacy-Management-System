@@ -8,13 +8,17 @@ router.route('/')
     .post(identifier, authorizedRoles("Admin"), addStaff)
 
 router.route('/:id')
-    .patch(identifier, authorizedRoles("Admin", "Pharmacist"), updateProfile)
-    .patch(identifier, authorizedRoles("Admin"), updateStaffRole)
-    .patch(identifier, authorizedRoles("Admin"), updateStaffStatus)
     .delete(identifier, authorizedRoles("Admin"), deleteStaff)
-    .get(identifier, authorizedRoles("Admin", "Pharmacist"), getStaff)
+    .get(identifier, authorizedRoles("Admin"), getStaff)
 
+router.route('/profile/:id')
+    .patch(identifier, authorizedRoles("Admin", "Pharmacist"), updateProfile)
 
-    //add activate or deactive staff
+router.route("/role/:id")
+    .patch(identifier, authorizedRoles("Admin"), updateStaffRole)
+
+router.route("/status/:id")
+    .patch(identifier, authorizedRoles("Admin"), updateStaffStatus)
+
 
 module.exports = router

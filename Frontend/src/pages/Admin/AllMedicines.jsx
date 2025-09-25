@@ -11,7 +11,7 @@ import { drugCategories, drugForm } from '../../lib/drugDetails'
 import { useNavigate } from 'react-router-dom'
 
 function AllMedicines() {
-  const { isFetchingDrugs, drugs, fetchDrugs, isUpdatingDrug, viewMore } = useDrugsStore()
+  const { isFetchingDrugs, drugs, fetchDrugs, isUpdatingDrug } = useDrugsStore()
   const [isOpen, setIsOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -63,7 +63,7 @@ function AllMedicines() {
   }
 
   const handleViewMore = (row) => {
-    viewMore(row)
+    localStorage.setItem('drug-view-more', JSON.stringify(row))
     navigate('/view-more')
   }
 

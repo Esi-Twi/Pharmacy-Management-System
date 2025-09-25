@@ -1,106 +1,65 @@
-import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Link } from 'react-router-dom'
-import { User, Mail, Shield, Clock, CheckCircle, XCircle, Edit, Save, Phone, MapPin, AlertCircle, Loader } from 'lucide-react';
-
+import { useState, useEffect } from 'react'
+import { User, Mail, Shield, Clock, CheckCircle, XCircle, Edit, Phone, MapPin, Loader, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import api from '../../api/axios'
+import { useAuthStore } from '../../store/useAuthStore';
 
 function Profile() {
-  const userData = JSON.parse(localStorage.getItem('user'))
+  const {authUser, getAuthUser, isGettingUser } = useAuthStore()
+  let userData = JSON.parse(localStorage.getItem('user'))
 
-  const fetchData  = () => {
-    console.log(user._id);
-    
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  console.log(userData);
-
-
-
-  const [originalUser, setOriginalUser] = useState({
-    _id: "66f2a8b4c12345678901234",
-    name: "Sam Robinson",
-    email: "samrobinson2000@gmail.com",
-    role: "Pharmacist",
-    status: "active",
-    verified: true,
-    createdAt: "2024-01-15T10:30:00Z",
-    updatedAt: "2024-09-01T14:20:00Z",
-    phone: "+1 555-999-036-1336",
-    location: "New York, NY"
-  });
-
-  const [user, setUser] = useState(userData);
-  const [editedUser, setEditedUser] = useState(userData);
+  const [editedUser, setEditedUser] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
-  const [hasChanges, setHasChanges] = useState(false);
-
-  // Check for changes whenever editedUser changes
-  useEffect(() => {
-    const changed = JSON.stringify(user) !== JSON.stringify(editedUser);
-    setHasChanges(changed);
-  }, [user, editedUser]);
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    if (successMessage) {
-      const timer = setTimeout(() => setSuccessMessage(''), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage]);
+    getAuthUser()
+    userData = authUser
+  }, [])
+  
 
   const validateForm = () => {
-    const newErrors = {};
-
-    // Name validation
-    if (!editedUser.name || editedUser.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters long';
+    //name validation
+    if (!editedUser.name) {
+      toast.error("Name cannot be empty")
+      return false
     }
 
-    // Phone validation (optional but must be valid if provided)
+    // Phone validation if provided
     if (editedUser.phone && editedUser.phone.trim()) {
       const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
       if (!phoneRegex.test(editedUser.phone.replace(/\s/g, ''))) {
-        newErrors.phone = 'Please enter a valid phone number';
+        toast.error('Please enter a valid phone number')
+        return false
       }
     }
 
-    // Location validation (optional)
-    if (editedUser.location && editedUser.location.trim().length > 100) {
-      newErrors.location = 'Location must be less than 100 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true
   };
 
   const handleEdit = () => {
+    const { name, phone, location } = userData
+    const safe_phone = phone || ''
+    const safe_location = location || ''
+    setEditedUser({ name, phone: safe_phone, location: safe_location });
+
     setIsEditing(true);
-    setEditedUser({ ...user });
-    setErrors({});
-    setSuccessMessage('');
   };
 
   const handleSave = async () => {
+    setIsSaving(true)
+
     if (!validateForm()) {
+      setIsSaving(false)
       return;
     }
-
-    if (!hasChanges) {
-      setIsEditing(false);
-      return;
-    }
-
-    setIsLoading(true);
+    
 
     try {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const res = await api.patch(`/staff/profile/${userData._id}`, editedUser)
+      toast.success(res.data.msg)
+      console.log(res);
+      
 
       // Here you would make the actual API call:
       // const response = await fetch(`/api/users/${user._id}`, {
@@ -117,33 +76,32 @@ function Profile() {
       // if (!response.ok) throw new Error('Update failed');
       // const updatedUser = await response.json();
 
-      // Simulate successful update
-      const updatedUser = {
-        ...editedUser,
-        name: editedUser.name.trim(),
-        phone: editedUser.phone?.trim(),
-        location: editedUser.location?.trim(),
-        updatedAt: new Date().toISOString()
-      };
+      // // Simulate successful update
+      // const updatedUser = {
+      //   ...editedUser,
+      //   name: editedUser.name.trim(),
+      //   phone: editedUser.phone?.trim(),
+      //   location: editedUser.location?.trim(),
+      //   updatedAt: new Date().toISOString()
+      // };
 
-      setUser(updatedUser);
-      setOriginalUser(updatedUser);
-      setIsEditing(false);
-      setSuccessMessage('Profile updated successfully!');
+      // setUser(updatedUser);
+      // setOriginalUser(updatedUser);
+      // setIsEditing(false);
 
     } catch (error) {
-      console.error('Update failed:', error);
-      setErrors({ general: 'Failed to update profile. Please try again.' });
+      console.log(error);
+      
+        toast.error(error.response.data.msg || "An error occured")
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    setEditedUser({ ...user });
+    setEditedUser([]);
     setIsEditing(false);
-    setErrors({});
-    setSuccessMessage('');
+    setIsSaving(false)
   };
 
   const handleInputChange = (field, value) => {
@@ -151,40 +109,8 @@ function Profile() {
       ...prev,
       [field]: value
     }));
-
-    // Clear specific field error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: undefined
-      }));
-    }
   };
 
-  const handleRoleChange = async (newRole) => {
-    if (newRole === user.role) return;
-
-    setIsLoading(true);
-    try {
-      // Simulate API call for role change - this would typically require admin privileges
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const updatedUser = {
-        ...user,
-        role: newRole,
-        updatedAt: new Date().toISOString()
-      };
-
-      setUser(updatedUser);
-      setEditedUser(updatedUser);
-      setSuccessMessage(`Role updated to ${newRole}!`);
-
-    } catch (error) {
-      setErrors({ general: 'Failed to update role. You may not have permission.' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -212,46 +138,19 @@ function Profile() {
 
   return (
     <div className=''>
-
-      {/* <Button asChild>
-        <Link href="/login">jon the party for here ooo</Link>
-      </Button> */}
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-red-100 p-4 md:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
-
-          {/* Success Message */}
-          {successMessage && (
-            <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-2xl flex items-center">
-              <CheckCircle size={20} className="mr-2" />
-              {successMessage}
-            </div>
-          )}
-
-          {/* General Error Message */}
-          {errors.general && (
-            <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-2xl flex items-center">
-              <AlertCircle size={20} className="mr-2" />
-              {errors.general}
-            </div>
-          )}
-
+          {isGettingUser ? <Loader2 /> : 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-
             {/* Profile Card */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
-                {isLoading && (
-                  <div className="absolute inset-0 bg-white bg-opacity-75 rounded-3xl flex items-center justify-center z-10">
-                    <Loader className="animate-spin text-blue-500" size={32} />
-                  </div>
-                )}
-
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 md:w-32 md:h-32 avatar rounded-full flex items-center justify-center mx-auto shadow-lg">
                       <h1>{userData.name[0]}</h1>
                     </div>
-                    {user.verified && (
+                    {userData.verified && (
                       <div className={`absolute -top-2 -right-2 ${userData.verified && 'bg-green-500'} rounded-full p-2 shadow-lg`}>
                         {userData.verified && <CheckCircle size={20} className="text-white" />}
                       </div>
@@ -265,17 +164,11 @@ function Profile() {
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-2 mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(userData.role)}`}>
-                        <Shield size={12} className="inline mr-1" />
-                        {userData.role}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(userData.role)}`}> <Shield size={12} className="inline mr-1" /> {userData.role}
                       </span>
 
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(userData.status)}`}>
-                        {userData.status === 'active' ? (
-                          <CheckCircle size={12} className="inline mr-1" />
-                        ) : (
-                          <XCircle size={12} className="inline mr-1" />
-                        )}
+                        {userData.status === 'active' ? (<CheckCircle size={12} className="inline mr-1" />) : (<XCircle size={12} className="inline mr-1" />)}
                         {userData.status}
                       </span>
                     </div>
@@ -305,81 +198,48 @@ function Profile() {
                     {!isEditing &&
                       <button
                         onClick={handleEdit}
-                        disabled={isLoading}
                         className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg flex items-center gap-2 mx-auto disabled:opacity-50"
                       >
-                        <Edit size={16} />
-                        Edit Profile
-                      </button>
+                        <Edit size={16} /> Edit Profile </button>
                     }
-
-                    {isEditing && hasChanges && (
-                      <p className="text-xs text-gray-500 text-center">
-                        You have unsaved changes
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
 
-{/* form for editing personal data */}
+              {/* form for editing personal data */}
               {isEditing && <div className="bg-white rounded-lg shadow-sm border mt-5 border-gray-200 p-4 lg:p-6">
                 <h1 className='mb-4 font-bold text-blue-600'>Edit your Personal Info</h1>
                 <div className="flex-1">
-                  <input
-                    type="text"
-                    value={editedUser.name || ''}
+                  <input type="text" value={editedUser.name || ''} placeholder="Enter name"
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className={`border py-1 px-2 ${errors.phone ? 'border-red-300' : 'border-gray-200'} focus:border-gray-800 outline-none bg-transparent w-full`}
-                    placeholder="Enter name"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                  )}
+                    className={`border py-1 px-2  focus:border-gray-800 outline-none bg-transparent w-full`} />
                 </div>
 
                 <div className="flex-1">
-                  <input
-                    type="text"
-                    value={editedUser.phone || ''}
+                  <input type="text" value={editedUser.phone} placeholder="Enter phone number"
                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                    className={`border mt-3 py-1 px-2 ${errors.phone ? 'border-red-300' : 'border-gray-200'} focus:border-gray-800 outline-none bg-transparent w-full`}
-                    placeholder="Enter phone number"
-                  />
-                  {errors.phone && (
-                    <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
-                  )}
+                    className={`border mt-3 py-1 px-2  focus:border-gray-800 outline-none bg-transparent w-full`} />
                 </div>
 
                 <div className="flex-1 mt-3">
-                  <input
-                    type="text"
-                    value={editedUser.location || ''}
+                  <input type="text" value={editedUser.location} placeholder="Enter location"
                     onChange={(e) => handleInputChange('location', e.target.value)}
-                    className={`border py-1 px-2 ${errors.location ? 'border-red-300' : 'border-gray-200'} focus:border-gray-800 outline-none bg-transparent w-full`}
-                    placeholder="Enter location"
-                  />
-                  {errors.location && (
-                    <p className="text-red-500 text-xs mt-1">{errors.location}</p>
-                  )}
+                    className={`border py-1 px-2  focus:border-gray-800 outline-none bg-transparent w-full`} />
                 </div>
 
                 <div className="flex gap-3 mt-4 justify-center flex-wrap">
-                  <button
-                    onClick={handleSave}
-                    disabled={isLoading || !hasChanges}
-                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? <Loader className="animate-spin" size={16} /> : <Save size={16} />}
-                    {isLoading ? 'Saving...' : 'Save Changes'}
+                  <button onClick={handleSave} disabled={isSaving}
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" >
+                    {isSaving ?
+                      <>
+                        <Loader className="animate-spin" size={16} /> <span>Saving...</span>
+                      </> :
+                      <>Save Changes</>}
                   </button>
-                  <button
-                    onClick={handleCancel}
-                    disabled={isLoading}
+
+                  <button onClick={handleCancel} disabled={isSaving}
                     className="bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300 transition-all duration-200 disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
+                  > Cancel </button>
                 </div>
               </div>}
             </div>
@@ -394,43 +254,27 @@ function Profile() {
                   Account Details
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                      <span className="font-medium text-gray-600">Account Status</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(userData.status)}`}>
-                        {userData.status}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                      <span className="font-medium text-gray-600">Email Verified</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${userData.verified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {userData.verified ? 'Verified' : 'Unverified'}
-                      </span>
-                    </div>
+                <div className="space-y-4 mb-3">
+                  <div className="flex justify-between items-center p-4 bg-gray-200 rounded-2xl">
+                    <span className="font-medium text-gray-600">Account Status</span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(userData.status)}`}>
+                      {userData.status}
+                    </span>
                   </div>
+                </div>
 
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                      <span className="font-medium text-gray-600">Role</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(userData.role)}`}>
-                        {userData.role}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                      <span className="font-medium text-gray-600">Member Since</span>
-                      <span className="text-sm font-medium text-gray-700">
-                        {formatDate(userData.createdAt)}
-                      </span>
-                    </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-4 bg-gray-100 rounded-2xl">
+                    <span className="font-medium text-gray-600">Role</span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(userData.role)}`}>
+                      {userData.role}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Recent Activity */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 lg:p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                   <Clock className="mr-3 text-purple-500" size={24} />
                   Recent Activity
@@ -442,9 +286,10 @@ function Profile() {
                       <CheckCircle size={20} className="text-green-500 mr-3 flex-shrink-0" />
                       <div>
                         <p className="font-medium text-gray-800">Profile Updated</p>
-                        <p className="text-sm text-gray-600">Last updated {formatDate(user.updatedAt)}</p>
+                        <p className="text-sm text-gray-600">Last updated {formatDate(userData.updatedAt)}</p>
                       </div>
                     </div>
+                    {/* write logic for recent or not */}
                     <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                       Recent
                     </span>
@@ -458,8 +303,8 @@ function Profile() {
                         <p className="text-sm text-gray-600">Account verification completed</p>
                       </div>
                     </div>
-                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Completed
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${userData.verified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {userData.verified ? 'Verified' : 'Unverified'}
                     </span>
                   </div>
 
@@ -468,17 +313,17 @@ function Profile() {
                       <User size={20} className="text-purple-500 mr-3 flex-shrink-0" />
                       <div>
                         <p className="font-medium text-gray-800">Account Created</p>
-                        <p className="text-sm text-gray-600">Joined as {user.role}</p>
+                        <p className="text-sm text-gray-600">Joined as {userData.role}</p>
                       </div>
                     </div>
                     <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {formatDate(user.createdAt)}
+                      {formatDate(userData.createdAt)}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>

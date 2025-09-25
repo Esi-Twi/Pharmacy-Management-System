@@ -16,7 +16,7 @@ function LogIn() {
     const onSubmit = async (data) => {
         try {
             if(!data.email || !data.password) {
-                return   toast.error("Email and Password are required", {
+                return  toast.error("Email and Password are required", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,

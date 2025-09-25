@@ -9,7 +9,7 @@ const app = express()
 const authRouter = require('./routes/authRouter')
 const drugRouter = require('./routes/drugRouter')
 const staffRouter = require('./routes/staffRouter')
-
+const salesRouter = require('./routes/salesRouter')
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -20,6 +20,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRouter)
 app.use('/drugs', drugRouter)
 app.use('/staff', staffRouter)
+app.use('/sales', salesRouter)
 
 app.get('/', (req,res) => {
     res.send('this is the dunon pharmacy server')
