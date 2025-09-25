@@ -31,5 +31,4 @@ export const useDrugsStore = create((set) => ({
             set({ isFetchingDrugs: false })
         }
     }, 
-    
 }))

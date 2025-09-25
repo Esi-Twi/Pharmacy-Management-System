@@ -1,30 +1,31 @@
-<!-- *** ---------------for documentation purposes------------ ***
-### completed backend functionalities
-* created register user --left with only admin can do it and logged in admin
-* login as user successfully 
-* logout as user if logged in already
+// <!-- *** ---------------for documentation purposes------------ ***
+// ### completed backend functionalities
+// * created register user --left with only admin can do it and logged in admin
+// * login as user successfully 
+// * logout as user if logged in already
 
-* admin can add, updated, delete drug
-* admin, pharmacist can get drugs
-* admin, pharmacist can update profile data except photo successfully
+// * admin can add, updated, delete drug
+// * admin, pharmacist can get drugs
+// * admin, pharmacist can update profile data ------
 
-* admin can get all staffs, delete staff
-* admin can update staff role, status
-* admin can add new staff details-email, role
+// * admin can get all staffs, delete staff
+// * admin can update staff role, status
+// * admin can add new staff details-email, role--------
 
-*pharmacist can create create sales and get todays sales 
-* admin can get all sales
+// *pharmacist can create create sales and get todays sales ------
+// * admin can get all sales----
 
 
-###----------- completed frontend functions
-* built login page
-* built layout for pages
-  * built profile page 
-  built add medicine page, can add medicine 
-  can update, modify, view more medicine
-  admin can delete staff  
+// ### completed frontend functions
+// * built login page
+// * built layout for pages
+//   * built profile page 
+//   built add medicine page, can add medicine 
+//   can update, modify, view more medicine
+//   admin can delete staff , update staff, role and status, view more staffs
+
   
-  -->
+//   -->
 
  //price is calculated
     //get ids of pharmacist and drugs 
@@ -32,7 +33,7 @@
     //get drugs and remove quantities
     //generate ticket
 // * [ ] Generate unique receipt number.
- [ ] Print/return receipt data (for PDF or thermal printer).
+//  [ ] Print/return receipt data (for PDF or thermal printer).
 // * [ ] Store purchase details (drug IDs, qty, price, total, cashier).
 // * [ ] Get sales history (filter by date, staff, drug).
     //first select drugs on first page -- be an array with drugs list and quantity 1
@@ -41,47 +42,5 @@
 // * Lookup individual receipts.
 
 
-      -----------------------durg page-----------------------------------
-   <div className="flex-1 flex flex-col h-screen">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b p-4 flex items-center">
-        <button
-          onClick={toggleSidebar}
-          className="lg:hidden p-2 rounded-md hover:bg-gray-100 mr-3"
-        >
-          {/* <Menu size={20} /> */}
-        </button>
-        <h1 className="text-xl font-semibold text-gray-800">
-          {getContentTitle()}
-        </h1>
-        <div className="ml-auto">
-          <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded capitalize">
-            {role}
-          </span>
-        </div>
-      </div>
-
-      {/* Content Area */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-medium mb-4">
-            {getContentTitle()} Content
-          </h2>
-          <p className="text-gray-600 mb-4">
-            This is the {activeItem} page content for {role} role.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-medium mb-2">Card {item}</h3>
-                <p className="text-gray-600 text-sm">
-                  Sample content for {activeItem} section
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-
+     
 

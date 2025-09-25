@@ -6,18 +6,16 @@ import Swal from 'sweetalert2'
 import api from '../../api/axios'
 import { toast } from 'sonner'
 import Select from 'react-select'
-import { drugCategories } from '../../lib/drugDetails'
 import { useNavigate } from 'react-router-dom'
 import { useStaffStore } from '../../store/useStaffStore'
 
 
 function ManageStaff() {
-  const { isGettingStaffs, getAllStaffs, allStaffs, isUpdatingStaff, updateRole, updateStatus} = useStaffStore()
+  const { isGettingStaffs, getAllStaffs, allStaffs, isUpdatingStaff, updateRole, updateStatus } = useStaffStore()
   const [isOpen, setIsOpen] = useState(false)
   const [isUpdatingRole, setIsUpdatingRole] = useState(false)
   const [roleUpdate, setRoleUpdate] = useState({})
   const [statusUpdate, setStatusUpdate] = useState({})
-  const [selectedStaff, setSelectedStaff] = useState({})
   const roles = [
     { label: 'Admin', value: "Admin" },
     { label: 'Pharmacist', value: "Pharmacist" },
@@ -31,37 +29,40 @@ function ManageStaff() {
 
   useEffect(() => {
     getAllStaffs()
+    localStorage.removeItem('staff')
   }, [])
 
   const handleUpdateRole = async (row) => {
     setIsOpen(true)
-    setRoleUpdate(row)
-    setSelectedStaff(row)
+    setRoleUpdate({id: row._id, role: row.role})
     setIsUpdatingRole(true)
   }
 
-  const updateRoleFunction = (id, data) => {
-    updateRole(id, data)
+  const updateRoleFunction = (data) => {
+    updateRole(data)
     setIsOpen(false)
     getAllStaffs()
+    setRoleUpdate({})
   }
 
   const handleUpdateStatus = (row) => {
     setIsOpen(true)
-    setStatusUpdate(row)
-    setSelectedStaff(row)
+    setStatusUpdate({id: row._id, status: row.status})
     setIsUpdatingRole(false)
   }
 
-   const updateStatusFunction = (id, data) => {
-    updateStatus(id, data)
+   const updateStatusFunction = (data) => {
+    console.log(statusUpdate);
+    
+    updateStatus(data)
     setIsOpen(false)
     getAllStaffs()
+    setStatusUpdate({})
   }
 
   const handleViewMore = (row) => {
-    // viewMore(row)
-    // navigate('/view-more')
+    localStorage.setItem('staff', JSON.stringify(row))
+    navigate('/view-more')
   }
 
 
@@ -161,8 +162,8 @@ function ManageStaff() {
                   <Select
                     className='mt-1'
                     options={roles}
-                    value={roles.find(option => option.value === selectedStaff.role) || null}
-                    onChange={(selected) => setRoleUpdate({ role: selected.value })}
+                    value={roles.find(option => option.value === roleUpdate.role) || {}}
+                    onChange={(selected) => setRoleUpdate({ ...roleUpdate, role: selected.value })}
                   />
                 </div>
               ) : (
@@ -171,8 +172,8 @@ function ManageStaff() {
                   <Select
                     className='mt-1'
                     options={status}
-                    value={status.find(option => option.value === selectedStaff.status) || null}
-                    onChange={(selected) => setStatusUpdate({ status: selected.value })}
+                    value={status.find(option => option.value === statusUpdate.status) || null}
+                    onChange={(selected) => setStatusUpdate({...statusUpdate, status: selected.value })}
                   />
                 </div>
               )}
@@ -180,7 +181,7 @@ function ManageStaff() {
 
               <div className='flex items-center justify-end pr-5'>
                 {isUpdatingRole ? (
-                  <button onClick={() => updateRoleFunction(selectedStaff._id, roleUpdate)} className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingStaff}>
+                  <button onClick={() => updateRoleFunction(roleUpdate)} className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingStaff}>
                     {isUpdatingStaff ? (
                       <div>
                         <Loader2 /> Updating ...
@@ -188,7 +189,7 @@ function ManageStaff() {
                     }
                   </button>
                 ) : (
-                  <button onClick={() => updateStatusFunction(selectedStaff._id, statusUpdate)} className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingStaff}>
+                  <button onClick={() => updateStatusFunction(statusUpdate)} className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingStaff}>
                     {isUpdatingStaff ? (
                       <div>
                         <Loader2 /> Updating ...

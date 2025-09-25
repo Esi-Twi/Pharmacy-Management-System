@@ -28,7 +28,6 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       submenu: [
         { label: 'Manage Staffs', page: '/staff' },
         { label: 'Add Staff', page: '/add-staff' },
-        { label: 'Update Staff', page: '/update-staff' }
       ]
     },
     {

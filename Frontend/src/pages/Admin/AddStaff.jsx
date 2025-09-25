@@ -55,7 +55,7 @@ function AddStaff() {
     <div className='flex items-center justify-start pt-12 pl-12 pr-5'>
 
       <div className="bg-white rounded-lg w-full xl:w-4/5 shadow-lg  border border-gray-200 px-4 py-6 lg:p-6">
-        <h1 className='text-2xl font-bold text-blue-700 mb-5'>Add Medicine</h1>
+        <h1 className='text-2xl font-bold text-blue-700 mb-5'>Add New Staff</h1>
 
         <form onSubmit={addDrug}>
           <div className='grid md:grid-cols-2 gap-5'>

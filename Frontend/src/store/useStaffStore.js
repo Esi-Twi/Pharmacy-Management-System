@@ -18,24 +18,24 @@ export const useStaffStore = create((set) => ({
             set({ isGettingStaff: false })
         }
     },
-    updateRole: async (id, role) => {
-        set({ isUpdatingStaff: true })
-        console.log(id, role);
-        
-        // try {
-        //     const res = await api.patch(`/staff/role/${id}`, role)
-        //     toast.success(res.data.msg);
-        // } catch (error) {
-        //     console.log("error in update staff role" + error);
-        //     toast.error(error.response.data.msg)
-        // } finally {
-        //     set({ isUpdatingStaff: false })
-        // }
-    },
-    updateStatus: async (id, status) => {
+    updateRole: async (data) => {
         set({ isUpdatingStaff: true })
         try {
-            const res = await api.patch(`/staff/status/${id}`, status)
+            const res = await api.patch(`/staff/role/${data.id}`, {role: data.role})
+            toast.success(res.data.msg);
+        } catch (error) {
+            console.log("error in update staff role" + error);
+            toast.error(error.response.data.msg)
+        } finally {
+            set({ isUpdatingStaff: false })
+        }
+    },
+    updateStatus: async (data) => {
+        set({ isUpdatingStaff: true })
+        console.log(data);
+        
+        try {
+            const res = await api.patch(`/staff/status/${data.id}`, {status: data.status})
             toast.success(res.data.msg);
         } catch (error) {
             console.log("error in update staff status" + error);
@@ -43,5 +43,5 @@ export const useStaffStore = create((set) => ({
         } finally {
             set({ isUpdatingStaff: false })
         }
-    }
+    }, 
 }))

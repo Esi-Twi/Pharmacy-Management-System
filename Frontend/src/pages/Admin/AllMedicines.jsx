@@ -28,6 +28,7 @@ function AllMedicines() {
 
   useEffect(() => {
     fetchDrugs()
+    localStorage.removeItem('drug-view-more')
   }, [])
 
 
