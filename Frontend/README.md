@@ -24,9 +24,7 @@ Reports & Analytics
     GET /api/pharmacist/sales → get all sales (filter by date, drug)
     GET /api/pharmacist/sales/:id → get sale by ID (receipt lookup)
 
-  Inventory (Limited)
-      GET /api/pharmacist/drugs/search?name=xxx → search drugs
-
+  Inventory (Limited)✅
   Sales History✅
 
 🔔 General Routes (/api/general) (Both roles)
@@ -49,13 +47,6 @@ Reports & Analytics
 -supervisor should see logout and login sessions with the timestamps
 
 *** login process✅ 
--take email password
--check if verified
--check account status
--redirect to approriate dashboard
--generate token for staff who couldn't create profile by admin
-
-
 
 *****main website
 -homepage
@@ -80,11 +71,7 @@ Reports & Analytics
 
 
 ------------ **backend functionalities** based on **who performs what**.
-
----
-
 # 🔑 **Admin Backend Functionalities**
-
 ### 👤 Authentication & User Management
 * Create staff accounts (pharmacists, admins).
 

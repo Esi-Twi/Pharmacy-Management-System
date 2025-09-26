@@ -1,5 +1,6 @@
 const Sales = require('../models/salesModel')
 const Drugs = require('../models/drugsModel')
+const User = require('../models/userModel')
 
 exports.createSales = async (req, res) => {
     const { id } = req.params
@@ -11,13 +12,16 @@ exports.createSales = async (req, res) => {
 
         const salesItems = []
         let totalPrice = 0
+        let totalQuantity = 0
         for (item in drugsWithQuantity) {
             const drugId = drugsWithQuantity[item].id
+            const quantity = drugsWithQuantity[item].quantity
             const drug = await Drugs.findById(drugId)
-            const subtotal = drug.selling_price * drugsWithQuantity[item].quantity
-            const selectedQuantity = drugsWithQuantity[item].quantity
+            const subtotal = drug.selling_price * quantity
+            const selectedQuantity = quantity
 
             totalPrice += subtotal
+            totalQuantity += quantity
             salesItems.push({
                 drugId,
                 drugName: drug.name,
@@ -31,10 +35,15 @@ exports.createSales = async (req, res) => {
             }, { new: true, runValidators: true })
         }
 
+        //find pharmacist name
+        const pharmacist = await User.findById(id)
+
         const newSale = await Sales.create({
             pharmacistId: id,
+            pharmacistName: pharmacist.name,
             items: salesItems,
-            totalPrice
+            totalPrice, 
+            totalQuantity
         })
         newSale.save()
 

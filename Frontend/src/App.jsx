@@ -13,7 +13,7 @@ import AppLayout from './layout/AppLayout'
 
 import sharedRoutes from './pages/routes/sharedRoutes'
 import adminRoutes from './pages/routes/adminRoutes'
-
+import pharmaRoutes from './pages/routes/pharmaRoutes'
 
 function App() {
 
@@ -31,6 +31,7 @@ function App() {
           <Route element={<ProtectedRoutes allowedRoles={["Admin", "Pharmacist"]}> <AppLayout/> </ProtectedRoutes>}>
             {sharedRoutes()}
             {adminRoutes()}
+            {pharmaRoutes()}
           </Route>
 
           <Route path='*' element={<ErrorPage />} />

@@ -1,108 +1,36 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import DataTable from '../../components/DataTable'
-import { useDrugsStore } from '../../store/useDrugsStore'
 import Loader from '../../components/Loader'
-import { DeleteIcon, DotSquare, Edit, List, Loader2, View } from 'lucide-react'
-import Swal from 'sweetalert2'
-import api from '../../api/axios'
-import { toast } from 'sonner'
-import Select from 'react-select'
-import { drugCategories, drugForm } from '../../lib/drugDetails'
-import { useNavigate } from 'react-router-dom'
+import { DotSquare, List, View, X } from 'lucide-react'
 import { useSalesStore } from '../../store/useSalesStore'
 
 
 function AllSales() {
   const [showList, setShowList] = useState(true)
-  const {isFetchingSales, allSales, fetchSales} = useSalesStore()
-
-
-  const { isFetchingDrugs, drugs, fetchDrugs, isUpdatingDrug } = useDrugsStore()
+  const { isFetchingSales, allSales, fetchSales } = useSalesStore()
+  const [selectedSale, setSelectedSale] = useState([])
   const [isOpen, setIsOpen] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    form: '',
-    batch_number: '',
-    expiry_date: '',
-    manufacture_date: '',
-    quantity: '',
-    purchase_price: '',
-    selling_price: '',
-  })
-  const navigate = useNavigate()
+
 
   useEffect(() => {
     fetchSales()
-
-    fetchDrugs()
   }, [])
 
-  console.log(allSales);
-  
-
-
-  const handleEdit = (row) => {
-    setIsOpen(true)
-    setFormData(row)
-  };
-
-  const updateData = (e) => {
-    e.preventDefault()
-    const { _id, createdAt, deleted, updatedAt, ...rest } = formData;
-    const id = _id;
-    setFormData(rest)
-
-    const hasEmptyField = Object.values(formData).some(value => value === '');
-    if (hasEmptyField) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Attention Please',
-        text: 'All fields are required'
-      });
-      return;
-    }
-
-    api.patch(`/drugs/${id}`, formData)
-      .then(res => {
-        setIsOpen(false)
-        fetchDrugs()
-        toast.success(res.data.msg)
-      }).catch(error => {
-        toast.error(error.response.data.msg || "An error occurred")
-      })
-  }
-
   const handleViewMore = (row) => {
-    localStorage.setItem('drug-view-more', JSON.stringify(row))
-    navigate('/view-more')
+    setIsOpen(true)
+    setSelectedSale(row)
   }
-
-
-  const handleDelete = (row) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: `You want to delete the medicine ${row.name}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete",
-      cancelButtonText: "Cancel"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        api.delete(`/drugs/${row._id}`)
-          .then(response => {
-            toast.success(response.data.msg)
-            fetchDrugs()
-          })
-          .catch(error => {
-            toast.error(error.response.data.msg || "An error occurred")
-          })
-      }
-    })
-  };
 
   const handleReload = () => {
     fetchSales()
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   return (
@@ -116,312 +44,161 @@ function AllSales() {
 
         <div>
           <button onClick={() => setShowList(true)} className='bg-blue-500 rounded-sm p-2 mr-3'>
-            <List className='size-5 text-white'/>
+            <List className='size-5 text-white' />
           </button>
-           <button className='bg-blue-500 rounded-sm p-2'>
-            <DotSquare onClick={() => setShowList(false)} className='size-5 text-white'/>
+          <button className='bg-blue-500 rounded-sm p-2'>
+            <DotSquare onClick={() => setShowList(false)} className='size-5 text-white' />
           </button>
         </div>
       </div>
 
-    {showList ? 
-      <div>
-        {isFetchingDrugs ? <Loader /> :
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
-            <DataTable
-              data={allSales}
-              onReload={handleReload}
-              columns={{
-                _id: "ID",
-                pharmacistName: "Pharmacist",
-                totalPrice: "Total Price",
-                paymentMethod: "Payment Method",
-                createdAt: "Created"
-              }}
-              actions={(row, index) => (
-                <div>
-                  <a role='button' onClick={() => handleEdit(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
-                    <Edit className='size-4' /> Modify Record</a>
-                  <a role='button' onClick={() => handleViewMore(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
-                    <View className='size-4' /> View More</a>
-                  <a role='button' onClick={() => handleDelete(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
-                    <DeleteIcon className='size-4' /> Delete</a>
+      {showList ?
+        <div>
+          {isFetchingSales ? <Loader /> :
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+              <DataTable
+                data={allSales}
+                onReload={handleReload}
+                columns={{
+                  _id: "ID",
+                  pharmacistName: "Pharmacist",
+                  totalPrice: "Total Price",
+                  totalQuantity: "Total Quantity",
+                  paymentMethod: "Payment Method",
+                  createdAt: "Created"
+                }}
+                actions={(row, index) => (
+                  <div>
+                    <a role='button' onClick={() => handleViewMore(row)} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-200 text-left flex items-center gap-2">
+                      <View className='size-4' /> View Invoice</a>
+                  </div>
+                )}
+                columnRenderers={{
+                  _id: (_, __, rowIndex) => rowIndex + 1,
+                  createdAt: (value) => {
+                    if (!value) return "";
+                    const d = value instanceof Date ? value : new Date(value);
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, "0");
+                    const day = String(d.getDate()).padStart(2, "0");
+                    return `${year}-${month}-${day}`;
+                  }
+                }}
+              />
+            </div>}
+        </div>
+        : <div>
+          {isFetchingSales ? <Loader /> :
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+              {/* Search buttons */}
+              <div className="border-0 mb-7 flex justify-between items-center flex-wrap gap-3">
+                <div className="flex items-center relative w-full sm:w-auto">
+                  <svg className="w-5 h-5 absolute left-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                  <input
+                    type="text"
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full sm:w-80"
+                    placeholder="Search ..."
+                    // value={searchQuery}
+                    // onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-              )}
-              columnRenderers={{
-                _id: (_, __, rowIndex) => rowIndex + 1,
-                createdAt: (value) => {
-                  if (!value) return "";
-                  const d = value instanceof Date ? value : new Date(value);
-                  const year = d.getFullYear();
-                  const month = String(d.getMonth() + 1).padStart(2, "0");
-                  const day = String(d.getDate()).padStart(2, "0");
-                  return `${year}-${month}-${day}`;
-                }
-              }}
-            />
-          </div>}
+              </div>
 
-        {/* Modal */}
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Overlay */}
-            <div className="fixed inset-0 bg-black/50" />
 
-            {/* Modal container */}
-            <div className="relative bg-white rounded-lg shadow-lg w-full max-w-3xl mx-auto z-50">
-              <form className="px-8 py-6" onSubmit={updateData}>
-                {/* Header */}
-                <div className="flex justify-between items-center border-b pb-1 mb-5">
-                  <h2 className="text-xl font-semibold">Edit Medicine</h2>
-                  <button type="button" className="text-gray-500 hover:text-gray-700" onClick={() => setIsOpen(false)} >
-                    <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
-                      <rect opacity="0.5" x={6} y="17.3137" width={16} height={2} rx={1} transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                      <rect x="7.41422" y={6} width={16} height={2} rx={1} transform="rotate(45 7.41422 6)" fill="currentColor" />
-                    </svg>
-                  </button>
+{/* createdAt: "2025-09-25T19:41:13.832Z"
+    items: (2) [{…}, {…}]
+    paymentMethod:"Cash"
+    pharmacistId:"68c22f5946f7d26e67749011"
+    pharmacistName:"Pharma - Kwame"
+    totalPrice: 10010
+    totalQuantity:4
+    updatedA */}
+
+              {/* cards */}
+              {allSales.map((sale) => (
+                <div className='p-2 border mb-4 rounded-md flex gap-2'>
+                  <div>
+                    <i className='bi bi-capsule w-12'></i>
+                  </div>
+                  <div>
+                    <p>Sold by: <span>{sale.pharmacistName}</span></p>
+                  </div>
                 </div>
+              ))}
 
-                <div className='grid md:grid-cols-2 gap-5'>
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Name of Medicine</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Category</label>
-                    <Select
-                      className='lg:w-4/5'
-                      options={drugCategories}
-                      value={drugCategories.find(option => option.value === formData.category) || null}
-                      onChange={(selected) => setFormData({ ...formData, category: selected.value })}
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Medicine's form</label>
-                    <Select
-                      className='lg:w-4/5'
-                      options={drugForm}
-                      value={drugForm.find(option => option.value === formData.form) || null}
-                      onChange={(selected) => setFormData({ ...formData, form: selected.value })}
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Batch Number</label>
-                    <input
-                      type="text"
-                      value={formData.batch_number}
-                      onChange={(e) => setFormData({ ...formData, batch_number: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Date Manufactured</label>
-                    <input
-                      type="date"
-                      value={formData.manufacture_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""}
-                      onChange={(e) => setFormData({ ...formData, manufacture_date: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Expiry Date</label>
-                    <input
-                      type="date"
-                      value={formData.expiry_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""} onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Quantity</label>
-                    <input
-                      type="number"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Purchase Price (GHS)</label>
-                    <input
-                      type="text"
-                      value={formData.purchase_price}
-                      onChange={(e) => setFormData({ ...formData, purchase_price: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Selling Price (GHS)</label>
-                    <input
-                      type="text"
-                      value={formData.selling_price}
-                      onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                </div>
-
-                <div className='flex items-center justify-end pr-5'>
-                  <button className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingDrug}>
-                    {isUpdatingDrug ? (
-                      <div>
-                        <Loader2 /> Updating ...
-                      </div>) : "Modify"
-                    }
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
-    :<div>
-        {isFetchingDrugs ? <Loader /> :
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
-            JUST CARDS
-            
-          </div>}
-
-        {/* Modal */}
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Overlay */}
-            <div className="fixed inset-0 bg-black/50" />
-
-            {/* Modal container */}
-            <div className="relative bg-white rounded-lg shadow-lg w-full max-w-3xl mx-auto z-50">
-              <form className="px-8 py-6" onSubmit={updateData}>
-                {/* Header */}
-                <div className="flex justify-between items-center border-b pb-1 mb-5">
-                  <h2 className="text-xl font-semibold">Edit Medicine</h2>
-                  <button type="button" className="text-gray-500 hover:text-gray-700" onClick={() => setIsOpen(false)} >
-                    <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
-                      <rect opacity="0.5" x={6} y="17.3137" width={16} height={2} rx={1} transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                      <rect x="7.41422" y={6} width={16} height={2} rx={1} transform="rotate(45 7.41422 6)" fill="currentColor" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className='grid md:grid-cols-2 gap-5'>
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Name of Medicine</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Category</label>
-                    <Select
-                      className='lg:w-4/5'
-                      options={drugCategories}
-                      value={drugCategories.find(option => option.value === formData.category) || null}
-                      onChange={(selected) => setFormData({ ...formData, category: selected.value })}
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Medicine's form</label>
-                    <Select
-                      className='lg:w-4/5'
-                      options={drugForm}
-                      value={drugForm.find(option => option.value === formData.form) || null}
-                      onChange={(selected) => setFormData({ ...formData, form: selected.value })}
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Batch Number</label>
-                    <input
-                      type="text"
-                      value={formData.batch_number}
-                      onChange={(e) => setFormData({ ...formData, batch_number: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Date Manufactured</label>
-                    <input
-                      type="date"
-                      value={formData.manufacture_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""}
-                      onChange={(e) => setFormData({ ...formData, manufacture_date: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Expiry Date</label>
-                    <input
-                      type="date"
-                      value={formData.expiry_date ? new Date(formData.manufacture_date).toISOString().split("T")[0] : ""} onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Quantity</label>
-                    <input
-                      type="number"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Purchase Price (GHS)</label>
-                    <input
-                      type="text"
-                      value={formData.purchase_price}
-                      onChange={(e) => setFormData({ ...formData, purchase_price: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                  <div className="flex-1 flex gap-0 flex-col mb-3">
-                    <label>Selling Price (GHS)</label>
-                    <input
-                      type="text"
-                      value={formData.selling_price}
-                      onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
-                      className="border mt-1 lg:w-4/5 py-1 px-2 focus:border-gray-800 outline-none bg-transparent w-full"
-                    />
-                  </div>
-
-                </div>
-
-                <div className='flex items-center justify-end pr-5'>
-                  <button className='bg-blue-700 rounded text-white px-9 py-1 mt-5' disabled={isUpdatingDrug}>
-                    {isUpdatingDrug ? (
-                      <div>
-                        <Loader2 /> Updating ...
-                      </div>) : "Modify"
-                    }
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
+            </div>}
+        </div>
       }
+
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-black/50" />
+
+          {/* Modal container */}
+
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-xl mx-auto z-50">
+            <div className="px-8 py-6">
+              {/* header */}
+              <div className='flex items-center justify-end'>
+                <button onClick={() => setIsOpen(false)}><X /></button>
+              </div>
+              <div className='flex items-center gap-2'>
+                <div className="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center">
+                  <i className="bi bi-heart-pulse text-white text-lg"></i>
+                </div>
+                <div>
+                  <h1 className='text-2xl font-bold'>Dunon Pharmacy</h1>
+                  <p className='-mt-2 text-sm text-gray-600'>Your one stop pharmacy</p>
+                </div>
+              </div>
+
+              {/* info */}
+              <div>
+                <h1 className='text-3xl font-3xl font-bold mt-6 text-blue-800'>INVOICE</h1>
+
+                <div className='flex items-center justify-between'>
+                  <p>Invoice by: <span className='font-bold text-xl'>{selectedSale.pharmacistName}</span></p>
+                  <p>{formatDate(selectedSale.createdAt)}</p>
+                </div>
+
+                <div>
+                  <p>Total Price: <span className='text-blue-700 font-bold text-lg'>{selectedSale.totalPrice}</span></p>
+                  <p>Payment: <span className='font-bold text-md'>{selectedSale.paymentMethod}</span></p>
+                </div>
+              </div>
+
+              {/* drugs */}
+              <table className='mt-6 w-100'>
+                <tbody>
+                  <tr className='bg-blue-600 !text-white'>
+                    <th className='text-center w-[15%] py-1'>NO.</th>
+                    <th className='text-left w-[75%]'>Drug</th>
+                    <th className='text-center w-[10%]'>Quan.</th>
+                  </tr>
+
+                  {selectedSale.items.map((sale, index) => {
+                    return <tr key={index}>
+                      <td className='text-center w-[5%] pt-2'>{index + 1}</td>
+                      <td>{sale.drugName}</td>
+                      <td className='px-8'>{sale.quantity}</td>
+                    </tr>
+                  })}
+
+                  <tr className='border-t-2 border-black mt-1'>
+                    <td></td>
+                    <td className='text-right pr-2 font-bold pt-2'>Total Quantity</td>
+                    <td className='text-center'>{selectedSale.totalQuantity}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p className='text-center mt-6 text-gray-800'>Thank you for purchasing from us.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

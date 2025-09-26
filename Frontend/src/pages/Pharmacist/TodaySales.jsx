@@ -214,6 +214,7 @@ function Drugs() {
   return (
     <div>
       this is the drugs page
+      <pages />
     </div>
   )
 }

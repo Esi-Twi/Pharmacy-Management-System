@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
+function AdminSideNav({ isOpen, closeSidebar, setActivePage }) {
   const [activeItem, setActiveItem] = useState('dashboard')
   const [expandedMenus, setExpandedMenus] = useState({});
 
@@ -50,7 +50,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
         { label: 'Customer Groups', page: '/customers/groups' }
       ]
     },
-    
+
     {
       id: 'manufacturer',
       icon: 'bi-building',
@@ -105,8 +105,8 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
       label: 'Tax',
       page: '/tax'
     },
-    
-      {
+
+    {
       id: 'account',
       icon: 'bi-person',
       label: 'Account',
@@ -126,11 +126,9 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
   };
 
   const handleNavigation = (page) => {
-   setActivePage(page); // 🟢 updates Dashboard content
-
+    setActivePage(page);
     closeSidebar();
   };
-
 
 
   return (
@@ -149,12 +147,12 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
                 </div>
                 <span className="text-xl font-bold text-gray-800"> Dunon Pharmacy</span>
               </div>
-              <button 
-              onClick={closeSidebar}
-              className="lg:hidden text-gray-500 hover:text-gray-700"
-            >
-              <i className="bi bi-x-lg text-xl"></i>
-            </button>
+              <button
+                onClick={closeSidebar}
+                className="lg:hidden text-gray-500 hover:text-gray-700"
+              >
+                <i className="bi bi-x-lg text-xl"></i>
+              </button>
             </div>
           </div>
 
@@ -168,10 +166,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
                       <button
                         onClick={() => toggleMenu(item.id)}
                         className={`
-                        w-full flex items-center justify-between px-3 py-3 text-left rounded-lg transition-colors duration-200 
-                       
-                      `}
-                      >
+                        w-full flex items-center justify-between px-3 py-3 text-left rounded-lg transition-colors duration-200 `}>
                         <div className="flex items-center space-x-3">
                           <i className={`${item.icon} text-lg`}></i>
                           <span className="font-medium">{item.label}</span>
@@ -182,8 +177,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
 
                       {/* Submenu */}
                       <div className={`overflow-hidden transition-all duration-300 ease-in-out
-                      ${expandedMenus[item.id] ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
-                      >
+                      ${expandedMenus[item.id] ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
                         <ul className="mt-2 ml-8 space-y-1">
                           {item.submenu.map((subItem, index) => (
                             <li key={index}>
@@ -203,7 +197,7 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage}) {
                       </div>
                     </div>
                   ) : (
-                    <Link to={item.page} onClick={() => {setActiveItem(item.id); handleNavigation(item.page)}}
+                    <Link to={item.page} onClick={() => { setActiveItem(item.id); handleNavigation(item.page) }}
                       className={`w-full flex items-center space-x-3 px-3 py-3 text-left rounded-lg transition-colors duration-200  ${activeItem === item.id
                         ? 'bg-blue-600 text-white border-r-2'
                         : 'text-gray-700 hover:bg-gray-50'

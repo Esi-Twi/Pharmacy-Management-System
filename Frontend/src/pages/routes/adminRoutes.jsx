@@ -8,11 +8,12 @@ import UpdateStaff from '../Admin/UpdateStaff'
 import AddStaff from '../Admin/AddStaff'
 import ViewMore from '../Admin/ViewMore'
 import AllSales from '../Admin/AllSales'
-
+import Dashboard from '../Shared/Dashboard'
 
 function adminRoutes() {
   return (
     <Route path='/'>
+        <Route path='dashboard' element={<Dashboard/>}/>
         <Route path='all-meds' element={<AllMedicines/>}/>
         <Route path='add-med' element={<AddMedicine/>}/>
         <Route path='add-staff' element={<AddStaff/>}/>

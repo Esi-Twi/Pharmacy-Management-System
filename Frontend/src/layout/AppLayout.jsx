@@ -70,11 +70,12 @@ function AppLayout() {
                         <AdminSideNav
                             isOpen={sidebarOpen}
                             closeSidebar={closeSidebar}
-                            setActivePage={setActivePage} // 🟢 pass function to sidebar
+                            setActivePage={setActivePage} 
                         /> :
                         <PharmaSideNav
                             isOpen={sidebarOpen}
                             closeSidebar={closeSidebar}
+                            setActivePage={setActivePage} 
                         />}
 
 

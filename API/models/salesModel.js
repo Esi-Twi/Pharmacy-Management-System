@@ -1,3 +1,4 @@
+const { string } = require('joi')
 const mongoose = require('mongoose')
 
 const SalesItemSchema = new mongoose.Schema(
@@ -30,8 +31,16 @@ const salesSchema = new mongoose.Schema({
         ref: "Users",
         required: true
     },
+     pharmacistName: {
+        type: String,
+        required: true
+    },
     items: [SalesItemSchema],
     totalPrice: {
+        type: Number,
+        required: true
+    },
+    totalQuantity: {
         type: Number,
         required: true
     },
