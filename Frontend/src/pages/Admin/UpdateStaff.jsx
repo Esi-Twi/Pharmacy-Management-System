@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useStaffStore } from '../../store/useStaffStore'
 import Loader from '../../components/Loader'
-import { CheckCircle, Mail, MapPin, Phone, Shield } from 'lucide-react'
+import { CheckCircle, Mail, MapPin, Phone, Shield, XCircle } from 'lucide-react'
 
 
 function UpdateStaff() {

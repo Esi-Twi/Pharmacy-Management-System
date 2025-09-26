@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Router as Routes } from 'react-router-dom'
 
 import AllMedicines from '../Admin/AllMedicines'
 import AddMedicine from '../Admin/AddMedicine'
@@ -8,20 +8,43 @@ import UpdateStaff from '../Admin/UpdateStaff'
 import AddStaff from '../Admin/AddStaff'
 import ViewMore from '../Admin/ViewMore'
 import AllSales from '../Admin/AllSales'
-import Dashboard from '../Shared/Dashboard'
+import Dashboard from '../Admin/Dashboard'
+import InventoryReport from '../Admin/InventoryReport'
+import YearlyReport from '../Admin/YearlyReport'
+import MontlyReport from '../Admin/MontlyReport'
+
 
 function adminRoutes() {
   return (
-    <Route path='/'>
-        <Route path='dashboard' element={<Dashboard/>}/>
-        <Route path='all-meds' element={<AllMedicines/>}/>
-        <Route path='add-med' element={<AddMedicine/>}/>
-        <Route path='add-staff' element={<AddStaff/>}/>
-        <Route path='staff' element={<ManageStaff/>}/>
-        <Route path='update-staff' element={<UpdateStaff/>}/>
-        <Route path='view-more' element={<ViewMore/>}/>
-        <Route path='sales' element={<AllSales/>}/>
-    </Route>
+    <>
+      <Route path='/'>
+        <Route path='dashboard' element={<Dashboard />} />
+        <Route path='view-more' element={<ViewMore />} />
+      </Route>
+
+      <Route path='/medicine'>
+        <Route path='' element={<AllMedicines />} />
+        <Route path='add' element={<AddMedicine />} />
+      </Route>
+
+      <Route path='/staff'>
+        <Route path='' element={<ManageStaff />} />
+        <Route path='add' element={<AddStaff />} />
+        <Route path='update' element={<UpdateStaff />} />
+      </Route>
+
+      <Route path='/sales'>
+        <Route path='' element={<AllSales />} />
+      </Route>
+
+      <Route path='/reports'>
+        <Route path='inventory' element={<InventoryReport />} />
+        <Route path='monthly' element={<MontlyReport />} />
+        <Route path='yearly' element={<YearlyReport />} />
+      </Route>
+    </>
+
+
   )
 }
 

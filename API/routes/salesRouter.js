@@ -3,6 +3,9 @@ const { identifier, authorizedRoles } = require('../middlewares/identification')
 const { createSales, getAllSales, getTodaysSales } = require('../controllers/salesController');
 const router = express.Router()
 
+
+//admin can view all sales, weekly, sales, montly sales, yearly sales
+
 router.route('/')
     .get(identifier, authorizedRoles("Admin"), getAllSales)
 
