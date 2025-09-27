@@ -9,7 +9,8 @@ import AddStaff from '../Admin/AddStaff'
 import ViewMore from '../Admin/ViewMore'
 import AllSales from '../Admin/AllSales'
 import Dashboard from '../Admin/Dashboard'
-import InventoryReport from '../Admin/InventoryReport'
+import DailyReport from '../Admin/DailyReport'
+import WeeklyReport from '../Admin/WeeklyReport'
 import YearlyReport from '../Admin/YearlyReport'
 import MontlyReport from '../Admin/MontlyReport'
 
@@ -38,7 +39,8 @@ function adminRoutes() {
       </Route>
 
       <Route path='/reports'>
-        <Route path='inventory' element={<InventoryReport />} />
+        <Route path='daily' element={<DailyReport />} />
+        <Route path='weekly' element={<WeeklyReport />} />
         <Route path='monthly' element={<MontlyReport />} />
         <Route path='yearly' element={<YearlyReport />} />
       </Route>

@@ -44,8 +44,9 @@ function AdminSideNav({ isOpen, closeSidebar, setActivePage }) {
       icon: 'bi-graph-up',
       label: 'Reports',
       submenu: [
-        { label: 'Inventory Report', page: '/reports/inventory' },
-        { label: 'Monthly Sales Report', page: '/reports/montly' },
+        { label: 'Daily Sales Report', page: '/reports/daily' },
+        { label: 'Weekly Sales Report', page: '/reports/weekly' },
+        { label: 'Monthly Sales Report', page: '/reports/monthly' },
         { label: 'Yearly Sales Report', page: '/reports/yearly' },
       ]
     },

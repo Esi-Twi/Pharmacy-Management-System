@@ -100,21 +100,17 @@ Reports & Analytics
 
 # 👩‍⚕️ **Pharmacist Backend Functionalities**
 ### 💊 Drug Inventory (Limited Scope)
-
 * Update stock levels (e.g., after restock).
 * Mark drugs as near-expiry.  ***** want to make it an automatic feature
-* View available drugs.
 * Search drugs by name/category.
 
 ### 💵 Sales & Billing
-
 * Create new sale (select drug, quantity, process purchase).
 * Generate receipt/ticket for each sale.
 * Store purchase details (drugs sold, quantities, price, total).
 * Reduce stock automatically after sale.
 
 ### 📜 Sales History
-
 * View past transactions (filter by date, receipt number, or drug).
 * Lookup individual receipts.
 
@@ -123,7 +119,125 @@ Reports & Analytics
 * Receive expiry and low-stock alerts.
 * Cannot change notification rules (only Admin can).
 
+
+
+## **1. Dashboard (Pharmacist Default Page)**
+Purpose: Quick overview of important pharmacy operations in one glance.
+**Details to include:**
+* **Quick Stats Cards**
+  * Total Sales Today
+  * Total Sales This Week
+  * Number of Drugs in Stock (low stock highlighted)
+  * Total Transactions Processed
+* **Recent Sales Activity**
+
+  * Table of last 5–10 transactions (drug names, quantity, total price, pharmacist who sold, time).
+* **Low Stock Alerts**
+
+  * List of drugs with stock below threshold (e.g., less than 10 packs).
+* **Top Selling Drugs (This Month)**
+
+  * Small chart or list showing the top 5 most sold drugs.
+* **Shortcut Links**
+
+  * Buttons to quickly go to: Add Sale, Add Drug, View Inventory, Generate Report.
+
 ---
+
+## **2. Monthly Sales Report & Analytics Page**
+
+Purpose: Deep dive into **monthly performance**.
+
+**Details to include:**
+
+* **Overview Cards**
+
+  * Total Revenue (₵) this month
+  * Total Transactions this month
+  * Average Daily Sales
+  * Most Profitable Drug
+* **Charts & Analytics**
+
+  * Line/Bar Chart: Daily Sales trend (Day 1 → Day 30/31).
+  * Pie/Donut Chart: Sales distribution by drug categories (e.g., Painkillers, Antibiotics, Cough medicines).
+  * Top 10 best-selling drugs (with quantities and revenue).
+  * Least selling drugs (to identify slow stock).
+* **Pharmacist Performance** (if multiple pharmacists)
+
+  * Ranking of pharmacists by sales made.
+* **Export Options**
+
+  * Export as PDF / Excel for accounting purposes.
+
+---
+
+## **3. Weekly Sales Report & Analytics Page**
+
+Purpose: More **granular insights** into weekly pharmacy activity.
+
+**Details to include:**
+
+* **Overview Cards**
+
+  * Weekly Revenue
+  * Number of Transactions
+  * Average Sales per Day
+* **Charts & Analytics**
+
+  * Bar Chart: Sales per day (Monday–Sunday).
+  * Comparison to Last Week (↑ or ↓ percentage).
+  * Top 5 selling drugs this week.
+  * Low stock drugs impacting weekly sales.
+* **Quick Trends**
+
+  * Which days of the week perform best (e.g., higher weekend sales).
+
+---
+
+## **4. Daily Sales Report & Analytics Page**
+
+Purpose: Track **pharmacy sales in real-time**.
+
+**Details to include:**
+
+* **Overview Cards**
+
+  * Total Sales Today
+  * Number of Customers Served (transactions)
+  * Most Sold Drug of the Day
+* **Charts & Analytics**
+
+  * Sales over hours (line chart: 8am → 10pm).
+  * Breakdown of sales by category (pie chart).
+  * Top 5 sold drugs today.
+* **Transaction Table**
+
+  * List all transactions today (drug list, pharmacist, total price, timestamp).
+
+---
+
+## **5. Yearly Sales Report & Analytics Page**
+
+Purpose: Long-term performance and growth.
+
+**Details to include:**
+
+* **Overview Cards**
+
+  * Total Annual Revenue
+  * Total Transactions for the Year
+  * Best Selling Drug of the Year
+  * Best Performing Pharmacist
+* **Charts & Analytics**
+
+  * Line/Bar Chart: Monthly Sales trend (Jan → Dec).
+  * Category Performance: Which drug categories generated the most revenue.
+  * Year-over-Year Growth Comparison (e.g., 2024 vs 2025).
+  * Seasonal Insights (e.g., more malaria drugs sold during rainy season).
+* **Exports**
+
+  * Annual Report downloadable for management/government reporting.
+
 
 # 📌 Quick Access Control Table
 

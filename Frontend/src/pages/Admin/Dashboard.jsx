@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import {useAnalyticsStore} from '../../store/useAnalyticsStore';
 
 /*
 ----------dashboard for pharmacist----------------
@@ -18,6 +19,15 @@ fix height of sidebar color when not full
 
 
 function Dashboard() {
+  const {dashboardData, isGettingDashboardData, getDashboardData} = useAnalyticsStore()
+
+  useEffect(() => {
+    getDashboardData()
+  }, [])
+
+  console.log(dashboardData, isGettingDashboardData);
+  
+
     const [selectedPeriod, setSelectedPeriod] = useState('Day');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   
