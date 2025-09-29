@@ -15,37 +15,29 @@ function MontlyReport() {
 
   const statsData = [
     {
-      title: 'Total Medicines',
-      value: monthlyData?.NoDrugs || 0,
+      title: 'Total Sales',
+      value: monthlyData?.noSales || 0,
       icon: 'bi-capsule',
       bgColor: 'bg-green-100',
       iconColor: 'text-green-600',
       textColor: 'text-green-800'
     },
     {
-      title: 'Sold This Week',
-      value: monthlyData?.drugsSoldWeekly || 0,
-      icon: 'bi-box-seam',
+      title: 'Total Revenue',
+      value: monthlyData?.totalRevenue || 0,
+      icon: 'bi-currency-dollar',
       bgColor: 'bg-yellow-100',
       iconColor: 'text-yellow-600',
       textColor: 'text-yellow-800'
     },
     {
-      title: 'Sales Today',
-      value: monthlyData?.todaysSales || 0,
-      icon: 'bi-exclamation-triangle',
-      bgColor: 'bg-blue-100',
-      iconColor: 'text-blue-600',
-      textColor: 'text-blue-800'
+      title: 'Average Sales',
+      value: monthlyData?.totalRevenue || 0,
+      icon: 'bi-currency-dollar',
+      bgColor: 'bg-yellow-100',
+      iconColor: 'text-yellow-600',
+      textColor: 'text-yellow-800'
     },
-    {
-      title: 'Sales This Week',
-      value: monthlyData?.weeklySales || 0,
-      icon: 'bi-calendar-x',
-      bgColor: 'bg-red-100',
-      iconColor: 'text-red-600',
-      textColor: 'text-red-800'
-    }
   ];
 
 
@@ -53,7 +45,7 @@ function MontlyReport() {
     <div>
       <div className="p-4 lg:p-6 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {statsData.map((stat, index) => (
             <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
               <div className="flex items-center justify-between">
@@ -71,7 +63,7 @@ function MontlyReport() {
 
         {/* top 10 most sold drugs */}
         {isGettingMonthlyData ? <Loader /> :
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
             <div>
               <h1 className='font-bold text-2xl text-blue-500'>Top 10 most sold drugs</h1>
             </div>

@@ -165,8 +165,9 @@ exports.getWeeklyReport = async (req, res) => {
   // Convert back to array
   const mostSoldDrugs = Object.values(drugMap);
   mostSoldDrugs.sort((a, b) => b.quantity - a.quantity);
+  const topMostSoldDrugs = mostSoldDrugs.slice(0, 10);
 
-  res.json({ weeklyRevenue, numSales: weeklySales.length, averageSales, mostSoldDrugs })
+  res.json({ weeklyRevenue, numSales: weeklySales.length, averageSales, topMostSoldDrugs })
 }
 
 /*
@@ -218,8 +219,10 @@ exports.getMonthlyReport = async (req, res) => {
   // Convert back to array
   const mostSoldDrugs = Object.values(drugMap);
   mostSoldDrugs.sort((a, b) => b.quantity - a.quantity);
+  const topMostSoldDrugs = mostSoldDrugs.slice(0, 10);
 
-  res.json({ totalRevenue, noSales: monthlySales.length, averageSales, mostSoldDrugs })
+
+  res.json({ totalRevenue, noSales: monthlySales.length, averageSales, topMostSoldDrugs })
 }
 
 /*

@@ -37,7 +37,7 @@ function YearlyReport() {
     <div>
       <div className="p-4 lg:p-6 space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-6">
         {statsData.map((stat, index) => (
           <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
             <div className="flex items-center justify-between">

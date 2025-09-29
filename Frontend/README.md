@@ -145,19 +145,10 @@ Purpose: Quick overview of important pharmacy operations in one glance.
 ---
 
 ## **2. Monthly Sales Report & Analytics Page**
-
-Purpose: Deep dive into **monthly performance**.
-
-**Details to include:**
-
 * **Overview Cards**
-
-  * Total Revenue (₵) this month
-  * Total Transactions this month
   * Average Daily Sales
   * Most Profitable Drug
 * **Charts & Analytics**
-
   * Line/Bar Chart: Daily Sales trend (Day 1 → Day 30/31).
   * Pie/Donut Chart: Sales distribution by drug categories (e.g., Painkillers, Antibiotics, Cough medicines).
   * Top 10 best-selling drugs (with quantities and revenue).
@@ -172,21 +163,11 @@ Purpose: Deep dive into **monthly performance**.
 ---
 
 ## **3. Weekly Sales Report & Analytics Page**
-
-Purpose: More **granular insights** into weekly pharmacy activity.
-
-**Details to include:**
-
 * **Overview Cards**
-
-  * Weekly Revenue
-  * Number of Transactions
   * Average Sales per Day
 * **Charts & Analytics**
-
   * Bar Chart: Sales per day (Monday–Sunday).
   * Comparison to Last Week (↑ or ↓ percentage).
-  * Top 5 selling drugs this week.
   * Low stock drugs impacting weekly sales.
 * **Quick Trends**
 
@@ -217,15 +198,7 @@ Purpose: Track **pharmacy sales in real-time**.
 ---
 
 ## **5. Yearly Sales Report & Analytics Page**
-
-Purpose: Long-term performance and growth.
-
-**Details to include:**
-
 * **Overview Cards**
-
-  * Total Annual Revenue
-  * Total Transactions for the Year
   * Best Selling Drug of the Year
   * Best Performing Pharmacist
 * **Charts & Analytics**
