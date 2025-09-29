@@ -5,18 +5,12 @@ import Loader from '../../components/Loader';
 
 /*
 ----------dashboard for pharmacist----------------
------functions-----
-1. create new sales
 2. get all sales and filter by date and drug for current day
 3. look up sales receipt for current day
--Sales Page – generate receipt
--Stock Update Page – update quantities when sold, view drugs, search drugs
 -Sales History Page – lookup previous transactions for current day
 
 fix height of sidebar color when not full
 */
-
-
 
 
 /*
@@ -131,128 +125,38 @@ function Dashboard() {
         </div>
 
         {/* top 5 most sold drugs */}
-         {isGettingDashboardData ? <Loader /> :
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
-          <div>
-            <h1 className='font-bold text-2xl text-blue-500'>Top 5 most sold drugs</h1>
-          </div>
-          <DataTable
-            data={dashboardData?.topMostSoldDrugs}
-            onReload={() => getDashboardData()}
-            columns={{
-              _id: "ID",
-              drugName: "Name",
-              quantity: "Quantity Sold",
-            }}
-            columnRenderers={{
-              _id: (_, __, rowIndex) => rowIndex + 1,
-              createdAt: (value) => {
-                if (!value) return "";
-                const d = value instanceof Date ? value : new Date(value);
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, "0");
-                const day = String(d.getDate()).padStart(2, "0");
-                return `${year}-${month}-${day}`;
-              }
-            }}
-          />
-        </div>}
-
-         {/* last 8 transactions */}
-         {isGettingDashboardData ? <Loader /> :
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
-          <div>
-            <h1 className='font-bold text-2xl text-blue-500'>Last 8 transactions</h1>
-          </div>
-          <DataTable
-            data={dashboardData?.lastTransactions}
-            onReload={() => getDashboardData()}
-            columns={{
-              _id: "ID",
-              pharmacistName: "Pharmacist",
-              totalPrice: "Price(GHS)",
-              totalQuantity: "Quantity",
-              paymentMethod: "Payment",
-              createdAt: "Sold At"
-            }}
-            columnRenderers={{
-              _id: (_, __, rowIndex) => rowIndex + 1,
-              createdAt: (value) => {
-                if (!value) return "";
-                const d = value instanceof Date ? value : new Date(value);
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, "0");
-                const day = String(d.getDate()).padStart(2, "0");
-                return `${year}-${month}-${day}`;
-              }
-            }}
-          />
-        </div>}
-
-
-        {/* low stock drugs */}
-         {isGettingDashboardData ? <Loader /> :
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
-          <div>
-            <h1 className='font-bold text-2xl text-red-500'>Low Stock Medicines</h1>
-          </div>
-          <DataTable
-            data={dashboardData?.lowStocks}
-            onReload={() => getDashboardData()}
-            columns={{
-              _id: "ID",
-              name: "Name",
-              form: "Form",
-              category: "Category",
-              quantity: "Quantity",
-              expiry_date: "Expiry"
-            }}
-            columnRenderers={{
-              _id: (_, __, rowIndex) => rowIndex + 1,
-              expiry_date: (value) => {
-                if (!value) return "";
-                const d = value instanceof Date ? value : new Date(value);
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, "0");
-                const day = String(d.getDate()).padStart(2, "0");
-                return `${year}-${month}-${day}`;
-              }
-            }}
-          />
-        </div>}
-
-        {/* Charts and Reports Row */}
+        {isGettingDashboardData ? <Loader /> :
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Sales Overview */}
           <div className="xl:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Sales Overview</h3>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900">Top 5 most sold drugs</h3>
+              {/* <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <span>Total Profit</span>
                 <span className="font-semibold text-gray-900">₹10,85,556</span>
-              </div>
+              </div> */}
             </div>
 
             {/* Simple Chart */}
             <div className="h-64 flex items-end justify-between space-x-2">
-              {chartData.map((data, index) => (
+              {dashboardData.topMostSoldDrugs.map((data, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
                   <div
                     className="bg-blue-500 rounded-t-md w-full relative"
-                    style={{ height: `${data.value * 2.5}px` }}
+                    style={{ height: `${data.quantity * 12.5}px` }}
                   >
                     <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
-                      ₹{data.value * 1000}
+                      {data.drugName}
                     </div>
                   </div>
-                  <span className="text-sm text-gray-600 mt-2">{data.month}</span>
+                  <span className="text-sm text-gray-600 mt-2">{data.quantity}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Purchase Report */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+          {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Purchase Report</h3>
               <button className="text-sm text-blue-600 hover:text-blue-700">Today</button>
@@ -274,8 +178,72 @@ function Dashboard() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </div> */}
+        </div>}
+
+        {/* last 8 transactions */}
+        {isGettingDashboardData ? <Loader /> :
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+            <div>
+              <h1 className='font-bold text-2xl text-blue-500'>Last 8 transactions</h1>
+            </div>
+            <DataTable
+              data={dashboardData?.lastTransactions}
+              onReload={() => getDashboardData()}
+              columns={{
+                _id: "ID",
+                pharmacistName: "Pharmacist",
+                totalPrice: "Price(GHS)",
+                totalQuantity: "Quantity",
+                paymentMethod: "Payment",
+                createdAt: "Sold At"
+              }}
+              columnRenderers={{
+                _id: (_, __, rowIndex) => rowIndex + 1,
+                createdAt: (value) => {
+                  if (!value) return "";
+                  const d = value instanceof Date ? value : new Date(value);
+                  const year = d.getFullYear();
+                  const month = String(d.getMonth() + 1).padStart(2, "0");
+                  const day = String(d.getDate()).padStart(2, "0");
+                  return `${year}-${month}-${day}`;
+                }
+              }}
+            />
+          </div>}
+
+
+        {/* low stock drugs */}
+        {isGettingDashboardData ? <Loader /> :
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+            <div>
+              <h1 className='font-bold text-2xl text-red-500'>Low Stock Medicines</h1>
+            </div>
+            <DataTable
+              data={dashboardData?.lowStocks}
+              onReload={() => getDashboardData()}
+              columns={{
+                _id: "ID",
+                name: "Name",
+                form: "Form",
+                category: "Category",
+                quantity: "Quantity",
+                expiry_date: "Expiry"
+              }}
+              columnRenderers={{
+                _id: (_, __, rowIndex) => rowIndex + 1,
+                expiry_date: (value) => {
+                  if (!value) return "";
+                  const d = value instanceof Date ? value : new Date(value);
+                  const year = d.getFullYear();
+                  const month = String(d.getMonth() + 1).padStart(2, "0");
+                  const day = String(d.getDate()).padStart(2, "0");
+                  return `${year}-${month}-${day}`;
+                }
+              }}
+            />
+          </div>}
+
 
 
 
@@ -283,7 +251,7 @@ function Dashboard() {
 
 
       {/* Top Navigation */}
-      <div className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
+      {/* <div className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
@@ -296,7 +264,7 @@ function Dashboard() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Period Selector */}
+            {/* Period Selector *
             <div className="hidden sm:flex bg-gray-100 rounded-lg p-1">
               {['Day', 'Week', 'Month', 'Year'].map((period) => (
                 <button
@@ -313,7 +281,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
 
   )

@@ -54,7 +54,7 @@ function ViewMore() {
 
       {drug &&
         <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-red-100 p-4 md:p-6 lg:p-8">
-          <Link to='/all-meds' className="flex items-center gap-2 mb-4">
+          <Link to='/medicine' className="flex items-center gap-2 mb-4">
             <ArrowLeft /> Back
           </Link>
 

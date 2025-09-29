@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function PharmaSideNav({ isOpen, closeSidebar }) {
+function PharmaSideNav({ isOpen, closeSidebar, setActivePage }) {
   const [activeItem, setActiveItem] = useState('create-sales')
   const [expandedMenus, setExpandedMenus] = useState({});
 
@@ -18,125 +18,6 @@ function PharmaSideNav({ isOpen, closeSidebar }) {
       label: "Today's Sales",
       page: '/today-sales'
     },
-    {
-      id: 'medicine',
-      icon: 'bi-capsule',
-      label: 'Medicine',
-      submenu: [
-        { label: 'All Medicines', link: '/create-sales' },
-        { label: 'Add Medicine', link: '/medicines/add' },
-        { label: 'Categories', link: '/medicines/categories' }
-      ]
-    },
-    {
-      id: 'account',
-      icon: 'bi-person',
-      label: 'Account',
-      submenu: [
-        { label: 'Profile', page: '/profile' },
-        { label: 'Add Staff', page: '/staff/add' },
-        { label: 'Staff Roles', page: '/staff/roles' }
-      ]
-    }, {
-      id: 'dashboard',
-      icon: 'bi-speedometer2',
-      label: 'Dashboard',
-      page: 'dashboard'
-    },
-    {
-      id: 'medicine',
-      icon: 'bi-capsule',
-      label: 'Medicine',
-      submenu: [
-        { label: 'Manage Medicines', page: '/all-meds' },
-        { label: 'Add Medicine', page: '/add-med' },
-      ]
-    },
-    {
-      id: 'staff',
-      icon: 'bi-person-badge',
-      label: 'Staff',
-      submenu: [
-        { label: 'Manage Staffs', page: '/staff' },
-        { label: 'Add Staff', page: '/add-staff' },
-      ]
-    },
-    {
-      id: 'invoice',
-      icon: 'bi-file-text',
-      label: 'Sales',
-      submenu: [
-        { label: 'All Sales', page: '/sales' },
-        { label: 'Create Invoice', page: '/invoices/create' },
-        { label: 'Pending Invoices', page: '/invoices/pending' }
-      ]
-    },
-    {
-      id: 'customer',
-      icon: 'bi-people',
-      label: 'Customer',
-      submenu: [
-        { label: 'All Customers', page: '/customers' },
-        { label: 'Add Customer', page: '/customers/add' },
-        { label: 'Customer Groups', page: '/customers/groups' }
-      ]
-    },
-
-    {
-      id: 'manufacturer',
-      icon: 'bi-building',
-      label: 'Manufacturer',
-      submenu: [
-        { label: 'All Manufacturers', page: '/manufacturers' },
-        { label: 'Add Manufacturer', page: '/manufacturers/add' }
-      ]
-    },
-    {
-      id: 'inventory',
-      icon: 'bi-box-seam',
-      label: 'Inventory',
-      submenu: [
-        { label: 'Stock Overview', page: '/inventory' },
-        { label: 'Low Stock Alert', page: '/inventory/low-stock' },
-        { label: 'Expired Items', page: '/inventory/expired' }
-      ]
-    },
-    {
-      id: 'returns',
-      icon: 'bi-arrow-return-left',
-      label: 'Returns',
-      submenu: [
-        { label: 'All Returns', page: '/returns' },
-        { label: 'Process Return', page: '/returns/process' }
-      ]
-    },
-    {
-      id: 'reports',
-      icon: 'bi-graph-up',
-      label: 'Reports',
-      submenu: [
-        { label: 'Sales Report', page: '/reports/sales' },
-        { label: 'Inventory Report', page: '/reports/inventory' },
-        { label: 'Customer Report', page: '/reports/customers' }
-      ]
-    },
-    {
-      id: 'accounts',
-      icon: 'bi-calculator',
-      label: 'Accounts',
-      submenu: [
-        { label: 'Income', page: '/accounts/income' },
-        { label: 'Expenses', page: '/accounts/expenses' },
-        { label: 'Balance Sheet', page: '/accounts/balance' }
-      ]
-    },
-    {
-      id: 'tax',
-      icon: 'bi-percent',
-      label: 'Tax',
-      page: '/tax'
-    },
-
     {
       id: 'account',
       icon: 'bi-person',

@@ -34,6 +34,7 @@ exports.createSales = async (req, res) => {
                 quantity: drug.quantity - selectedQuantity
             }, { new: true, runValidators: true })
         }
+        
 
         //find pharmacist name
         const pharmacist = await User.findById(id)

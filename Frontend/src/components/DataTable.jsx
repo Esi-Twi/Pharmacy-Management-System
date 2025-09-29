@@ -225,7 +225,7 @@ const DataTable = ({
                       />
                     </td>
                     {processedColumns.map((col, i) => (
-                      <td key={i} className="px-4 py-3 whitespace-nowrap">
+                      <td key={i} className={`px-4 py-3 whitespace-nowrap ${selectedRows.includes(globalIndex) ? "bg-green-200" : ""}`}>
                         {col.render ? col.render(row[col.key], row, globalIndex) : row[col.key]}
                       </td>
                     ))}

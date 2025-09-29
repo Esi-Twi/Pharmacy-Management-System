@@ -31,27 +31,16 @@ admin can get
 //   can update, modify, view more medicine
 //   admin can delete staff , update staff, role and status, view more 
 // admin can all sales, and receipt
-admin can view weekly, monthly and yearly sales
-
+admin can view weekly, monthly and yearly sales and dashboard summary
+pharmacist can print ticket
   
 //   -->
 
-
+//add logic so if medicine quanitity cannot be less than 0 and if zero give a message 
+and also add remove to the ticket page 
 //make export optional on some pages
+//check default routing of pharmacist to dashboard
 
- //price is calculated
-    //get ids of pharmacist and drugs 
-    //ticket will have pharmacist name, drugs with price, time, date, and totol price 
-    //get drugs and remove quantities
-    //generate ticket
-// * [ ] Generate unique receipt number.
-//  [ ] Print/return receipt data (for PDF or thermal printer).
-// * [ ] Store purchase details (drug IDs, qty, price, total, cashier).
-// * [ ] Get sales history (filter by date, staff, drug).
-    //first select drugs on first page -- be an array with drugs list and quantity 1
-    //add quantities to array of drugs 
-    // * View past transactions (filter by date, receipt number, or drug).
-// * Lookup individual receipts.
 
 
      
