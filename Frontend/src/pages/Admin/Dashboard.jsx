@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import {useAnalyticsStore} from '../../store/useAnalyticsStore';
+import { useAnalyticsStore } from '../../store/useAnalyticsStore';
+import DataTable from '../../components/DataTable'
+import Loader from '../../components/Loader';
 
 /*
 ----------dashboard for pharmacist----------------
@@ -17,48 +19,58 @@ fix height of sidebar color when not full
 
 
 
+/*
+Purpose: Quick overview of important pharmacy operations in one glance.
+**Details to include:**
+* **Top Selling Drugs (This Month)**
+  * Small chart or list showing the top 5 most sold drugs.
+*/
+
+
+
+
 
 function Dashboard() {
-  const {dashboardData, isGettingDashboardData, getDashboardData} = useAnalyticsStore()
+  const { dashboardData, isGettingDashboardData, getDashboardData } = useAnalyticsStore()
 
   useEffect(() => {
     getDashboardData()
-  }, [])
+  }, [getDashboardData])
 
-  console.log(dashboardData, isGettingDashboardData);
-  
+  console.log(dashboardData);
 
-    const [selectedPeriod, setSelectedPeriod] = useState('Day');
+
+  const [selectedPeriod, setSelectedPeriod] = useState('Day');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  
-   const statsData = [
-    { 
-      title: 'Total Profit', 
-      value: '₹1,03,748', 
-      icon: 'bi-currency-rupee',
+
+  const statsData = [
+    {
+      title: 'Total Medicines',
+      value: dashboardData?.NoDrugs || 0,
+      icon: 'bi-capsule',
       bgColor: 'bg-green-100',
       iconColor: 'text-green-600',
       textColor: 'text-green-800'
     },
-    { 
-      title: 'Inventory Stock', 
-      value: '1,432', 
+    {
+      title: 'Sold This Week',
+      value: dashboardData?.drugsSoldWeekly || 0,
       icon: 'bi-box-seam',
       bgColor: 'bg-yellow-100',
       iconColor: 'text-yellow-600',
       textColor: 'text-yellow-800'
     },
-    { 
-      title: 'Out of Stock', 
-      value: '389', 
+    {
+      title: 'Sales Today',
+      value: dashboardData?.todaysSales || 0,
       icon: 'bi-exclamation-triangle',
       bgColor: 'bg-blue-100',
       iconColor: 'text-blue-600',
       textColor: 'text-blue-800'
     },
-    { 
-      title: 'Expired', 
-      value: '24', 
+    {
+      title: 'Sales This Week',
+      value: dashboardData?.weeklySales || 0,
       icon: 'bi-calendar-x',
       bgColor: 'bg-red-100',
       iconColor: 'text-red-600',
@@ -75,31 +87,30 @@ function Dashboard() {
     { month: 'Jun', value: 80 }
   ];
 
-   const purchaseReports = [
-    { 
-      title: 'Total Items Ordered', 
-      value: '800', 
+  const purchaseReports = [
+    {
+      title: 'Total Items Sold',
+      value: dashboardData?.drugsSoldWeekly,
       icon: 'bi-cart-check',
       color: 'text-gray-600'
     },
-    { 
-      title: 'Amount', 
-      value: '₹70,500', 
-      icon: 'bi-currency-rupee',
+    {
+      title: 'Amount',
+      value: 'GHS' + dashboardData?.todaysSales,
+      icon: 'bi-currency-dollar',
       color: 'text-blue-600'
     },
-    { 
-      title: 'Amount Pending', 
-      value: '₹30,000', 
+    {
+      title: 'Amount Pending',
+      value: '₹30,000',
       icon: 'bi-clock-history',
       color: 'text-orange-600'
     }
   ];
 
+
   return (
     <div>
-    
-
       {/* Main Content */}
       <div className="p-4 lg:p-6 space-y-6">
         {/* Stats Cards */}
@@ -119,6 +130,97 @@ function Dashboard() {
           ))}
         </div>
 
+        {/* top 5 most sold drugs */}
+         {isGettingDashboardData ? <Loader /> :
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+          <div>
+            <h1 className='font-bold text-2xl text-blue-500'>Top 5 most sold drugs</h1>
+          </div>
+          <DataTable
+            data={dashboardData?.topMostSoldDrugs}
+            onReload={() => getDashboardData()}
+            columns={{
+              _id: "ID",
+              drugName: "Name",
+              quantity: "Quantity Sold",
+            }}
+            columnRenderers={{
+              _id: (_, __, rowIndex) => rowIndex + 1,
+              createdAt: (value) => {
+                if (!value) return "";
+                const d = value instanceof Date ? value : new Date(value);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, "0");
+                const day = String(d.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+              }
+            }}
+          />
+        </div>}
+
+         {/* last 8 transactions */}
+         {isGettingDashboardData ? <Loader /> :
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+          <div>
+            <h1 className='font-bold text-2xl text-blue-500'>Last 8 transactions</h1>
+          </div>
+          <DataTable
+            data={dashboardData?.lastTransactions}
+            onReload={() => getDashboardData()}
+            columns={{
+              _id: "ID",
+              pharmacistName: "Pharmacist",
+              totalPrice: "Price(GHS)",
+              totalQuantity: "Quantity",
+              paymentMethod: "Payment",
+              createdAt: "Sold At"
+            }}
+            columnRenderers={{
+              _id: (_, __, rowIndex) => rowIndex + 1,
+              createdAt: (value) => {
+                if (!value) return "";
+                const d = value instanceof Date ? value : new Date(value);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, "0");
+                const day = String(d.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+              }
+            }}
+          />
+        </div>}
+
+
+        {/* low stock drugs */}
+         {isGettingDashboardData ? <Loader /> :
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+          <div>
+            <h1 className='font-bold text-2xl text-red-500'>Low Stock Medicines</h1>
+          </div>
+          <DataTable
+            data={dashboardData?.lowStocks}
+            onReload={() => getDashboardData()}
+            columns={{
+              _id: "ID",
+              name: "Name",
+              form: "Form",
+              category: "Category",
+              quantity: "Quantity",
+              expiry_date: "Expiry"
+            }}
+            columnRenderers={{
+              _id: (_, __, rowIndex) => rowIndex + 1,
+              expiry_date: (value) => {
+                if (!value) return "";
+                const d = value instanceof Date ? value : new Date(value);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, "0");
+                const day = String(d.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+              }
+            }}
+          />
+        </div>}
+
         {/* Charts and Reports Row */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Sales Overview */}
@@ -130,12 +232,12 @@ function Dashboard() {
                 <span className="font-semibold text-gray-900">₹10,85,556</span>
               </div>
             </div>
-            
+
             {/* Simple Chart */}
             <div className="h-64 flex items-end justify-between space-x-2">
               {chartData.map((data, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
-                  <div 
+                  <div
                     className="bg-blue-500 rounded-t-md w-full relative"
                     style={{ height: `${data.value * 2.5}px` }}
                   >
@@ -155,7 +257,7 @@ function Dashboard() {
               <h3 className="text-lg font-semibold text-gray-900">Purchase Report</h3>
               <button className="text-sm text-blue-600 hover:text-blue-700">Today</button>
             </div>
-            
+
             <div className="space-y-4">
               {purchaseReports.map((report, index) => (
                 <div key={index} className="flex items-center justify-between">
@@ -177,7 +279,7 @@ function Dashboard() {
 
 
 
-    </div>
+      </div>
 
 
       {/* Top Navigation */}
@@ -200,11 +302,10 @@ function Dashboard() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(period)}
-                  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 ${
-                    selectedPeriod === period
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 ${selectedPeriod === period
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                    }`}
                 >
                   {period}
                 </button>

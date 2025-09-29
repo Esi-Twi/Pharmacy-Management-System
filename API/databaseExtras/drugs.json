@@ -56,7 +56,7 @@
   },
   {
     "name": "Amlodipine 5mg",
-    "category": "Blood Pressure Medicines",
+    "category": "Cough & Cold Medicines",
     "form": "Tablet",
     "batch_number": "AML006",
     "expiry_date": "2026-09-22",
@@ -67,7 +67,7 @@
   },
   {
     "name": "Metformin 500mg",
-    "category": "Diabetes Medicines",
+    "category": "Cough & Cold Medicines",
     "form": "Tablet",
     "batch_number": "MET007",
     "expiry_date": "2026-04-18",
@@ -210,7 +210,7 @@
   },
   {
     "name": "Atenolol 50mg",
-    "category": "Blood Pressure Medicines",
+    "category": "Vitamins & Blood Tonics",
     "form": "Tablet",
     "batch_number": "ATE020",
     "expiry_date": "2026-06-05",
@@ -221,7 +221,7 @@
   },
   {
     "name": "Insulin Injection 100IU",
-    "category": "Diabetes Medicines",
+    "category": "Vitamins & Blood Tonics",
     "form": "Injection",
     "batch_number": "INS021",
     "expiry_date": "2025-10-15",

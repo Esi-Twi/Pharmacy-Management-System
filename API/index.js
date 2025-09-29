@@ -10,6 +10,7 @@ const authRouter = require('./routes/authRouter')
 const drugRouter = require('./routes/drugRouter')
 const staffRouter = require('./routes/staffRouter')
 const salesRouter = require('./routes/salesRouter')
+const analyticsRouter = require('./routes/analyticsRouter')
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -21,6 +22,7 @@ app.use('/api/auth', authRouter)
 app.use('/drugs', drugRouter)
 app.use('/staff', staffRouter)
 app.use('/sales', salesRouter)
+app.use('/api/analytics', analyticsRouter)
 
 app.get('/', (req,res) => {
     res.send('this is the dunon pharmacy server')

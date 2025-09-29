@@ -35,6 +35,9 @@ admin can get
   
 //   -->
 
+
+//make export optional on some pages
+
  //price is calculated
     //get ids of pharmacist and drugs 
     //ticket will have pharmacist name, drugs with price, time, date, and totol price 
