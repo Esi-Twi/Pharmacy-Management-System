@@ -32,7 +32,14 @@ function LogIn() {
             })
 
             login(res.data.user, res.data.token)
-            navigate('/dashboard')
+            const user = JSON.parse(localStorage.getItem('user'))
+
+            if(user.role === 'Pharmacist') {
+                navigate('/create-sales')
+            } else {
+                navigate('/dashboard')
+            }
+            
 
         } catch (error) {
             let message = 'Login failed!!';

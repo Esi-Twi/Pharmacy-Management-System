@@ -24,8 +24,6 @@ function PharmaSideNav({ isOpen, closeSidebar, setActivePage }) {
       label: 'Account',
       submenu: [
         { label: 'Profile', page: '/profile' },
-        { label: 'Add Staff', page: '/staff/add' },
-        { label: 'Staff Roles', page: '/staff/roles' }
       ]
     }
   ]
@@ -46,7 +44,7 @@ function PharmaSideNav({ isOpen, closeSidebar, setActivePage }) {
   return (
     <div>
 
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+      <div className={`fixed inset-y-0 h-[100vh] left-0 z-50 w-72 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
         <div className="flex flex-col h-full bg-white">
           {/* Header */}

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import DataTable from '../../components/DataTable'
 import Loader from '../../components/Loader'
-import { DotSquare, List, Mail, MapPin, MessageCircleHeart, Phone, Pill, Save, Shield, Tablet, View, X, XCircle } from 'lucide-react'
+import { DotSquare, List, MessageCircleHeart, Save, View, X } from 'lucide-react'
 import { useSalesStore } from '../../store/useSalesStore'
 
 
@@ -10,6 +10,7 @@ function AllSales() {
   const { isFetchingSales, allSales, fetchSales } = useSalesStore()
   const [selectedSale, setSelectedSale] = useState([])
   const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
 
 
   useEffect(() => {
@@ -33,21 +34,14 @@ function AllSales() {
     });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800 border-green-200';
-      case 'inactive': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getRoleColor = (role) => {
-    switch (role) {
-      case 'Admin': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'Pharmacist': return 'bg-blue-100 text-blue-800 border-blue-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
+   const filteredData = useMemo(() => {
+      if (!searchQuery) return allSales.sort();
+      return allSales.filter((item) =>
+        Object.values(item).some((val) =>
+          val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }, [allSales, searchQuery]);
 
   return (
     <div>
@@ -114,15 +108,15 @@ function AllSales() {
                     type="text"
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full sm:w-80"
                     placeholder="Search ..."
-                  // value={searchQuery}
-                  // onChange={(e) => setSearchQuery(e.target.value)}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
 
               {/* cards */}
               <div className='mt-6 gap-6'>
-                {allSales.map((sale, index) => (
+                {filteredData.map((sale, index) => (
                   <div key={index} className="">
                     <div className="bg-white mb-6 rounded-lg shadow-md border border-gray-200 p-2 w-full">
                       <div className='flex items-center justify-between'>
@@ -134,34 +128,30 @@ function AllSales() {
                           <p>Sold by: <span className="text-xl font-bold text-gray-800">{sale.pharmacistName}</span></p>
                         </div>
 
-                        <button onClick={() => {setIsOpen(true); setSelectedSale(sale)}} className='mr-3'>
+                        <button onClick={() => { setIsOpen(true); setSelectedSale(sale) }} className='mr-3'>
                           <List className='size-5 text-black' />
                         </button>
                       </div>
 
-                       {/* createdAt: "2025-09-25T19:41:13.832Z"
-    paymentMethod:"Cash"
-    updatedA */}
-
                       <div className="mt-2">
-                          <p>
-                            <span className="text-md font-bold text-black">Total Price: </span>{sale.totalPrice}
-                          </p>
+                        <p>
+                          <span className="text-md font-bold text-black">Total Price: </span>{sale.totalPrice}
+                        </p>
 
-                           <p>
-                            <span className="text-md font-bold text-black">Total Quantity: </span>{sale.totalPrice}
-                          </p>
-                        
-                          <div className="text-md flex items-center gap-7 text-gray-900 space-y-2">
-                             <div className="flex items-center justify-center">
-                              <Save size={14} className="mr-2 flex-shrink-0" />
-                              <span className="break-all"><span className='text-lg font-bold'>Created:</span> {formatDate(sale.createdAt)}</span>
-                            </div>
+                        <p>
+                          <span className="text-md font-bold text-black">Total Quantity: </span>{sale.totalPrice}
+                        </p>
 
-                            <div className="flex items-center justify-center -mt-4">
-                              <MessageCircleHeart size={14} className="mr-2 flex-shrink-0" />
-                              <span><span className='text-lg font-bold'>Payment Method: </span>{sale.paymentMethod}</span>
-                            </div>
+                        <div className="text-md flex items-center gap-7 text-gray-900 space-y-2">
+                          <div className="flex items-center justify-center">
+                            <Save size={14} className="mr-2 flex-shrink-0" />
+                            <span className="break-all"><span className='text-lg font-bold'>Created:</span> {formatDate(sale.createdAt)}</span>
+                          </div>
+
+                          <div className="flex items-center justify-center -mt-4">
+                            <MessageCircleHeart size={14} className="mr-2 flex-shrink-0" />
+                            <span><span className='text-lg font-bold'>Payment Method: </span>{sale.paymentMethod}</span>
+                          </div>
                         </div>
 
                       </div>
@@ -180,7 +170,6 @@ function AllSales() {
           <div className="fixed inset-0 bg-black/50" />
 
           {/* Modal container */}
-
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-xl mx-auto z-50">
             <div className="px-8 py-6">
               {/* header */}

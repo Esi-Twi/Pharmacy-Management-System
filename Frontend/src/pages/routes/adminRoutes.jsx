@@ -4,7 +4,6 @@ import { Route, Router as Routes } from 'react-router-dom'
 import AllMedicines from '../Admin/AllMedicines'
 import AddMedicine from '../Admin/AddMedicine'
 import ManageStaff from '../Admin/ManageStaff'
-import UpdateStaff from '../Admin/UpdateStaff'
 import AddStaff from '../Admin/AddStaff'
 import ViewMore from '../Admin/ViewMore'
 import AllSales from '../Admin/AllSales'
@@ -31,7 +30,6 @@ function adminRoutes() {
       <Route path='/staff'>
         <Route path='' element={<ManageStaff />} />
         <Route path='add' element={<AddStaff />} />
-        <Route path='update' element={<UpdateStaff />} />
       </Route>
 
       <Route path='/sales'>

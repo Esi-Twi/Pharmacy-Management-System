@@ -1,220 +1,170 @@
-import React from 'react'
-import {
-  Home,
-  Users,
-  BarChart3,
-  Package,
-  FileText,
-  Settings,
-  Activity,
-  User,
-  Pill
-} from 'lucide-react' // adjust if you use another icon library
+import { useState, useEffect, useMemo } from 'react'
+import Loader from '../../components/Loader'
+import { List, MessageCircleHeart, Save, X} from 'lucide-react'
+import { useSalesStore } from '../../store/useSalesStore'
 
 function Drugs() {
-  const sidebarConfig = {
-    admin: {
-      title: 'Admin Dashboard',
-      items: [
-        { id: 'overview', label: 'Overview', icon: Home },
-        { id: 'users', label: 'User Management', icon: Users },
-        { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-        { id: 'inventory', label: 'Inventory', icon: Package },
-        { id: 'reports', label: 'Reports', icon: FileText },
-        { id: 'settings', label: 'System Settings', icon: Settings }
-      ]
-    },
-    pharmacist: {
-      title: 'Pharmacist Portal',
-      items: [
-        { id: 'dashboard', label: 'Dashboard', icon: Home },
-        { id: 'prescriptions', label: 'Prescriptions', icon: FileText },
-        { id: 'inventory', label: 'Drug Inventory', icon: Package },
-        { id: 'patients', label: 'Patients', icon: Users },
-        { id: 'activity', label: 'Activity Log', icon: Activity },
-        { id: 'profile', label: 'Profile', icon: User }
-      ]
-    }
-  }
+  const { isFetchingTodaysSales, todaySales, fetchTodaysSales } = useSalesStore()
+  const [selectedSale, setSelectedSale] = useState([])
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Map of all page content
-  const pages = {
-    overview: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">System Overview</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">1,234</p>
-              </div>
-              <Users className="w-8 h-8 text-blue-500" />
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Active Pharmacists</p>
-                <p className="text-2xl font-bold text-gray-900">56</p>
-              </div>
-              <Pill className="w-8 h-8 text-green-500" />
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">$45,678</p>
-              </div>
-              <BarChart3 className="w-8 h-8 text-purple-500" />
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Inventory</p>
-                <p className="text-2xl font-bold text-gray-900">8,921</p>
-              </div>
-              <Package className="w-8 h-8 text-orange-500" />
-            </div>
-          </div>
-        </div>
-      </div>
-    ),
-    users: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">Manage system users, roles, and permissions.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    analytics: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">View system analytics and performance metrics.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    dashboard: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Pharmacist Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending Prescriptions</p>
-                <p className="text-2xl font-bold text-gray-900">12</p>
-              </div>
-              <FileText className="w-8 h-8 text-red-500" />
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Completed Today</p>
-                <p className="text-2xl font-bold text-gray-900">28</p>
-              </div>
-              <Activity className="w-8 h-8 text-green-500" />
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Low Stock Items</p>
-                <p className="text-2xl font-bold text-gray-900">5</p>
-              </div>
-              <Package className="w-8 h-8 text-orange-500" />
-            </div>
-          </div>
-        </div>
-      </div>
-    ),
-    prescriptions: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Prescriptions</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">Manage and process patient prescriptions.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    inventory: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">Track and manage inventory levels.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    patients: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Patient Records</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">View and manage patient information.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    activity: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Activity Log</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">View recent activities and transactions.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    reports: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Reports</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">Generate and view system reports.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    settings: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">Configure system settings and preferences.</p>
-          </div>
-        </div>
-      </div>
-    ),
-    profile: () => (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            <p className="text-gray-600">Manage your profile information.</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
-  // Render the active page, or fallback if not found
-  // const Page = pages[activeItem] || (() => <div>Page not found</div>)
+  useEffect(() => {
+    fetchTodaysSales()
+  }, [])
+
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return todaySales.sort();
+    return todaySales.filter((item) =>
+      Object.values(item).some((val) =>
+        val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [todaySales, searchQuery]);
 
   return (
-    <div>
-      this is the drugs page
-      <pages />
+    <div className='p-4'>
+      {isFetchingTodaysSales ? <Loader /> :
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 m-4 lg:p-6">
+          {/* Search buttons */}
+          <div className="border-0 mb-7 flex justify-between items-center flex-wrap gap-3">
+            <div className="flex items-center relative w-full sm:w-auto">
+              <svg className="w-5 h-5 absolute left-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              <input
+                type="text"
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full sm:w-80"
+                placeholder="Search ..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* cards */}
+          <div className='mt-6 gap-6'>
+            {filteredData.map((sale, index) => (
+              <div key={index} className="">
+                <div className="bg-white mb-6 rounded-lg shadow-md border border-gray-200 p-2 w-full">
+                  <div className='flex items-center justify-between'>
+                    <div className='flex gap-3'>
+                      <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i className="bi bi-capsule text-white text-xl"></i>
+                      </div>
+
+                      <p>Sold by: <span className="text-xl font-bold text-gray-800">{sale.pharmacistName}</span></p>
+                    </div>
+
+                    <button onClick={() => { setIsOpen(true); setSelectedSale(sale) }} className='mr-3'>
+                      <List className='size-5 text-black' />
+                    </button>
+                  </div>
+
+                  <div className="mt-2">
+                    <p>
+                      <span className="text-md font-bold text-black">Total Price: </span>{sale.totalPrice}
+                    </p>
+
+                    <p>
+                      <span className="text-md font-bold text-black">Total Quantity: </span>{sale.totalPrice}
+                    </p>
+
+                    <div className="text-md flex items-center gap-7 text-gray-900 space-y-2">
+                      <div className="flex items-center justify-center">
+                        <Save size={14} className="mr-2 flex-shrink-0" />
+                        <span className="break-all"><span className='text-lg font-bold'>Created:</span> {formatDate(sale.createdAt)}</span>
+                      </div>
+
+                      <div className="flex items-center justify-center -mt-4">
+                        <MessageCircleHeart size={14} className="mr-2 flex-shrink-0" />
+                        <span><span className='text-lg font-bold'>Payment Method: </span>{sale.paymentMethod}</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>}
+
+        {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-black/50" />
+
+          {/* Modal container */}
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-xl mx-auto z-50">
+            <div className="px-8 py-6">
+              {/* header */}
+              <div className='flex items-center justify-end'>
+                <button onClick={() => setIsOpen(false)}><X /></button>
+              </div>
+              <div className='flex items-center gap-2'>
+                <div className="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center">
+                  <i className="bi bi-heart-pulse text-white text-lg"></i>
+                </div>
+                <div>
+                  <h1 className='text-2xl font-bold'>Dunon Pharmacy</h1>
+                  <p className='-mt-2 text-sm text-gray-600'>Your one stop pharmacy</p>
+                </div>
+              </div>
+
+              {/* info */}
+              <div>
+                <h1 className='text-3xl font-3xl font-bold mt-6 text-blue-800'>INVOICE</h1>
+
+                <div className='flex items-center justify-between'>
+                  <p>Invoice by: <span className='font-bold text-xl'>{selectedSale.pharmacistName}</span></p>
+                  <p>{formatDate(selectedSale.createdAt)}</p>
+                </div>
+
+                <div>
+                  <p>Total Price: <span className='text-blue-700 font-bold text-lg'>{selectedSale.totalPrice}</span></p>
+                  <p>Payment: <span className='font-bold text-md'>{selectedSale.paymentMethod}</span></p>
+                </div>
+              </div>
+
+              {/* drugs */}
+              <table className='mt-6 w-100'>
+                <tbody>
+                  <tr className='bg-blue-600 !text-white'>
+                    <th className='text-center w-[15%] py-1'>NO.</th>
+                    <th className='text-left w-[75%]'>Drug</th>
+                    <th className='text-center w-[10%]'>Quan.</th>
+                  </tr>
+
+                  {selectedSale.items.map((sale, index) => {
+                    return <tr key={index}>
+                      <td className='text-center w-[5%] pt-2'>{index + 1}</td>
+                      <td>{sale.drugName}</td>
+                      <td className='px-8'>{sale.quantity}</td>
+                    </tr>
+                  })}
+
+                  <tr className='border-t-2 border-black mt-1'>
+                    <td></td>
+                    <td className='text-right pr-2 font-bold pt-2'>Total Quantity</td>
+                    <td className='text-center'>{selectedSale.totalQuantity}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p className='text-center mt-6 text-gray-800'>Thank you for purchasing from us.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

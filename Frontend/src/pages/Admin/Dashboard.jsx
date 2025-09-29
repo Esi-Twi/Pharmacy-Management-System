@@ -31,8 +31,6 @@ function Dashboard() {
     getDashboardData()
   }, [getDashboardData])
 
-  console.log(dashboardData);
-
 
   const [selectedPeriod, setSelectedPeriod] = useState('Day');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -47,9 +45,9 @@ function Dashboard() {
       textColor: 'text-green-800'
     },
     {
-      title: 'Sold This Week',
+      title: 'Medicines Sold',
       value: dashboardData?.drugsSoldWeekly || 0,
-      icon: 'bi-box-seam',
+      icon: 'bi-capsule',
       bgColor: 'bg-yellow-100',
       iconColor: 'text-yellow-600',
       textColor: 'text-yellow-800'
@@ -57,7 +55,7 @@ function Dashboard() {
     {
       title: 'Sales Today',
       value: dashboardData?.todaysSales || 0,
-      icon: 'bi-exclamation-triangle',
+      icon: 'bi-currency-dollar',
       bgColor: 'bg-blue-100',
       iconColor: 'text-blue-600',
       textColor: 'text-blue-800'
@@ -65,7 +63,7 @@ function Dashboard() {
     {
       title: 'Sales This Week',
       value: dashboardData?.weeklySales || 0,
-      icon: 'bi-calendar-x',
+      icon: 'bi-currency-dollar',
       bgColor: 'bg-red-100',
       iconColor: 'text-red-600',
       textColor: 'text-red-800'
@@ -102,9 +100,8 @@ function Dashboard() {
     }
   ];
 
-
   return (
-    <div>
+    <div className='pb-14'>
       {/* Main Content */}
       <div className="p-4 lg:p-6 space-y-6">
         {/* Stats Cards */}
@@ -139,7 +136,7 @@ function Dashboard() {
 
             {/* Simple Chart */}
             <div className="h-64 flex items-end justify-between space-x-2">
-              {dashboardData.topMostSoldDrugs.map((data, index) => (
+              {dashboardData.topMostSoldDrugs?.map((data, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
                   <div
                     className="bg-blue-500 rounded-t-md w-full relative"

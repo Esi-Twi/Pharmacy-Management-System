@@ -32,7 +32,7 @@ admin can get
 //   admin can delete staff , update staff, role and status, view more 
 // admin can all sales, and receipt
 admin can view weekly, monthly and yearly sales and dashboard summary
-pharmacist can print ticket
+pharmacist can print ticket and view todays sales
   
 //   -->
 

@@ -14,16 +14,10 @@ Drug Management✅
 
 Reports & Analytics
     GET /api/admin/reports/daily
-    GET /api/admin/reports/weekly
-    GET /api/admin/reports/monthly
-    GET /api/admin/reports/most-sold
     GET /api/admin/reports/export/:format → export as pdf, excel, csv
 
 👩‍⚕️ Pharmacist Routes (/api/pharmacist)
-    Sales & Billing
-    GET /api/pharmacist/sales → get all sales (filter by date, drug)
-    GET /api/pharmacist/sales/:id → get sale by ID (receipt lookup)
-
+    Sales & Billing✅
   Inventory (Limited)✅
   Sales History✅
 
@@ -31,7 +25,6 @@ Reports & Analytics
     GET /api/general/notifications → fetch all notifications
     PATCH /api/general/notifications/:id/read → mark notification as read
     GET /api/general/drugs/near-expiry → list near expiry drugs
-    GET /api/general/drugs/low-stock → list low stock drugs
 
 
 
@@ -83,70 +76,35 @@ Reports & Analytics
 * Generate daily, weekly, and monthly sales reports.
 * Export reports (PDF, Excel, CSV).
 * View sales trends (charts, revenue overview).
-* View most sold drugs.
 * Compare sales periods (this month vs last month).
 
 ### 🔔 Notifications
-
 * Access all expiry and stock notifications.
 * Manage notification rules (e.g., set threshold for low stock alerts).
 
 ### ⚙️ System Management
-
 * Update pharmacy settings (branding, logo, etc.).
 * View system activity logs (who added drugs, made sales, etc.).
 
----
-
 # 👩‍⚕️ **Pharmacist Backend Functionalities**
 ### 💊 Drug Inventory (Limited Scope)
-* Update stock levels (e.g., after restock).
 * Mark drugs as near-expiry.  ***** want to make it an automatic feature
 * Search drugs by name/category.
 
-### 💵 Sales & Billing
-* Create new sale (select drug, quantity, process purchase).
-* Generate receipt/ticket for each sale.
-* Store purchase details (drugs sold, quantities, price, total).
-* Reduce stock automatically after sale.
+### 💵 Sales & Billing✅
 
 ### 📜 Sales History
 * View past transactions (filter by date, receipt number, or drug).
-* Lookup individual receipts.
 
 ### 🔔 Notifications
-
 * Receive expiry and low-stock alerts.
 * Cannot change notification rules (only Admin can).
 
-
-
 ## **1. Dashboard (Pharmacist Default Page)**
 Purpose: Quick overview of important pharmacy operations in one glance.
-**Details to include:**
-* **Quick Stats Cards**
-  * Total Sales Today
-  * Total Sales This Week
-  * Number of Drugs in Stock (low stock highlighted)
-  * Total Transactions Processed
-* **Recent Sales Activity**
-
-  * Table of last 5–10 transactions (drug names, quantity, total price, pharmacist who sold, time).
-* **Low Stock Alerts**
-
-  * List of drugs with stock below threshold (e.g., less than 10 packs).
-* **Top Selling Drugs (This Month)**
-
-  * Small chart or list showing the top 5 most sold drugs.
-* **Shortcut Links**
-
-  * Buttons to quickly go to: Add Sale, Add Drug, View Inventory, Generate Report.
-
----
 
 ## **2. Monthly Sales Report & Analytics Page**
 * **Overview Cards**
-  * Average Daily Sales
   * Most Profitable Drug
 * **Charts & Analytics**
   * Line/Bar Chart: Daily Sales trend (Day 1 → Day 30/31).
@@ -154,13 +112,9 @@ Purpose: Quick overview of important pharmacy operations in one glance.
   * Top 10 best-selling drugs (with quantities and revenue).
   * Least selling drugs (to identify slow stock).
 * **Pharmacist Performance** (if multiple pharmacists)
-
   * Ranking of pharmacists by sales made.
 * **Export Options**
-
   * Export as PDF / Excel for accounting purposes.
-
----
 
 ## **3. Weekly Sales Report & Analytics Page**
 * **Overview Cards**
@@ -170,13 +124,9 @@ Purpose: Quick overview of important pharmacy operations in one glance.
   * Comparison to Last Week (↑ or ↓ percentage).
   * Low stock drugs impacting weekly sales.
 * **Quick Trends**
-
   * Which days of the week perform best (e.g., higher weekend sales).
 
----
-
 ## **4. Daily Sales Report & Analytics Page**
-
 Purpose: Track **pharmacy sales in real-time**.
 
 **Details to include:**
@@ -202,15 +152,12 @@ Purpose: Track **pharmacy sales in real-time**.
   * Best Selling Drug of the Year
   * Best Performing Pharmacist
 * **Charts & Analytics**
-
   * Line/Bar Chart: Monthly Sales trend (Jan → Dec).
   * Category Performance: Which drug categories generated the most revenue.
   * Year-over-Year Growth Comparison (e.g., 2024 vs 2025).
   * Seasonal Insights (e.g., more malaria drugs sold during rainy season).
 * **Exports**
-
   * Annual Report downloadable for management/government reporting.
-
 
 # 📌 Quick Access Control Table
 
@@ -234,14 +181,11 @@ Purpose: Track **pharmacy sales in real-time**.
 ---
 
 ✅ With this split:
-
 * **Admins** = strategic control → manage staff, full drug inventory, reports, analytics, rules.
 * **Pharmacists** = operational tasks → selling, updating stock, handling prescriptions, seeing alerts.
 
-
 ************backend functionalities**********
 ### 🔑 **Authentication & Authorization**
-
 * [ ] Register new user (Admin creates Pharmacist accounts).
 
 ### 💊 **Drug Inventory Management**
@@ -252,26 +196,16 @@ Purpose: Track **pharmacy sales in real-time**.
 * [ ] Auto-disable expired drugs (cannot be sold).
 
 ### 💵 **Sales & Billing**
-* [ ] Create new sale (pharmacist selects drugs, quantities).
-* [ ] Reduce stock after sale.
-* [ ] Generate unique receipt number.
 * [ ] Print/return receipt data (for PDF or thermal printer).
-* [ ] Store purchase details (drug IDs, qty, price, total, cashier).
 * [ ] Get sales history (filter by date, staff, drug).
 
 ### 📊 **Reports & Analytics**
 * [ ] Get daily sales report.
-* [ ] Get weekly sales report.
-* [ ] Get monthly sales report.
-* [ ] Get revenue summary (total sales, profit margin if needed).
-* [ ] Get most sold drugs (for chart visualization).
 * [ ] Compare current vs past sales.
 * [ ] Export reports (PDF, Excel, CSV).
 
 ### 👩‍⚕️ **Staff Management (Admin only)**
 * [ ] Add staff (pharmacist).
-* [ ] Activate/deactivate staff accounts.
-* [ ] Get all staff list.
 
 ### 🔔 **Notifications**
 * [ ] Trigger alert when drug is below stock threshold.
@@ -287,41 +221,20 @@ Purpose: Track **pharmacy sales in real-time**.
 
 # 📌 Summary of Endpoints You’ll Likely Need
 * **Auth** → `/auth/register`, `/auth/login`, `/auth/logout`, `/auth/profile`, `/auth/change-password`
-* **Drugs** → `/drugs`, `/drugs/:id`, `/drugs/search`, `/drugs/low-stock`, `/drugs/near-expiry`
-* **Sales** → `/sales`, `/sales/:id`, `/sales/history`, `/sales/report/daily|weekly|monthly`, `/sales/most-sold`
-* **Staff** → `/staff`, `/staff/:id`, `/staff/activate`, `/staff/deactivate`
 * **Notifications** → `/notifications`, `/notifications/:id/read`
-* **Reports** → `/reports/export/pdf|excel|csv`
-
-✅ 
 
 # 📌 Pharmacist Sidebar (Dashboard)
-
-Here’s what a **Pharmacist** needs access to:
-
 ### 1. **Dashboard (Default Page ✅)**
-
-* Quick stats (today’s sales, stock alerts).
-* Widgets like:
-
-  * 🔹 *Today’s total sales*
   * 🔹 *Near-expiry drugs count*
-  * 🔹 *Most sold drugs today/this week*
-
-👉 This should be the **default page** when a pharmacist logs in.
 
 ### 2. **Sales**
 * Search drugs by name/category/barcode.
-* Add to cart.
-* Generate receipt/ticket.
 
 ### 3. **Stock Management**
-* Update drug quantities.
 * Mark near-expiry drugs.
 * Auto-flag expired items (cannot be sold).
 
 ### 4. **Sales History**
-* View past transactions handled by **that pharmacist**.
 * Search by date, receipt number, or drug name.
 
 ### 5. **Notifications**

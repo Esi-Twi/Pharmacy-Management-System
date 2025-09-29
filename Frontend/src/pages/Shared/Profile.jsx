@@ -5,18 +5,23 @@ import api from '../../api/axios'
 import { useAuthStore } from '../../store/useAuthStore';
 
 function Profile() {
-  const {authUser, getAuthUser, isGettingUser } = useAuthStore()
-  let userData = JSON.parse(localStorage.getItem('user'))
+  // const {authUser, getAuthUser, isGettingUser } = useAuthStore()
+  const [userData, setUserData] = useState(null)
+  const [isFetching, setIsFetching] = useState(false)
+  // let userData = JSON.parse(localStorage.getItem('user'))
 
   const [editedUser, setEditedUser] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false)
 
-  useEffect(() => {
-    getAuthUser()
-    userData = authUser
-  }, [])
   
+  useEffect(() => {
+    setIsFetching(true)
+    const user = JSON.parse(localStorage.getItem('user'))
+    setUserData(user)
+    setIsFetching(false)
+  }, [])
+
 
   const validateForm = () => {
     //name validation
@@ -53,42 +58,18 @@ function Profile() {
       setIsSaving(false)
       return;
     }
-    
 
     try {
       const res = await api.patch(`/staff/profile/${userData._id}`, editedUser)
-      toast.success(res.data.msg)
-      console.log(res);
       
-
-      // Here you would make the actual API call:
-      // const response = await fetch(`/api/users/${user._id}`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     name: editedUser.name.trim(),
-      //     email: editedUser.email.trim().toLowerCase(),
-      //     phone: editedUser.phone?.trim(),
-      //     location: editedUser.location?.trim()
-      //   })
-      // });
-
-      // if (!response.ok) throw new Error('Update failed');
-      // const updatedUser = await response.json();
-
-      // // Simulate successful update
-      // const updatedUser = {
-      //   ...editedUser,
-      //   name: editedUser.name.trim(),
-      //   phone: editedUser.phone?.trim(),
-      //   location: editedUser.location?.trim(),
-      //   updatedAt: new Date().toISOString()
-      // };
-
-      // setUser(updatedUser);
-      // setOriginalUser(updatedUser);
-      // setIsEditing(false);
-
+      const updatedUser = { ...userData, ...editedUser, updatedAt: new Date().toISOString() };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      // ✅ Update state immediately so UI re-renders
+      setUserData(updatedUser);
+      
+      toast.success(res.data.msg)
+      setIsEditing(false)
     } catch (error) {
       console.log(error);
       
@@ -138,9 +119,9 @@ function Profile() {
 
   return (
     <div className=''>
+      {isFetching ? <Loader /> : 
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-red-100 p-4 md:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
-          {isGettingUser ? <Loader2 /> : 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Profile Card */}
             <div className="lg:col-span-1">
@@ -148,11 +129,11 @@ function Profile() {
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 md:w-32 md:h-32 avatar rounded-full flex items-center justify-center mx-auto shadow-lg">
-                      <h1>{userData.name[0]}</h1>
+                      <h1>{userData?.name[0]}</h1>
                     </div>
-                    {userData.verified && (
-                      <div className={`absolute -top-2 -right-2 ${userData.verified && 'bg-green-500'} rounded-full p-2 shadow-lg`}>
-                        {userData.verified && <CheckCircle size={20} className="text-white" />}
+                    {userData?.verified && (
+                      <div className={`absolute -top-2 -right-2 ${userData?.verified && 'bg-green-500'} rounded-full p-2 shadow-lg`}>
+                        {userData?.verified && <CheckCircle size={20} className="text-white" />}
                       </div>
                     )}
                   </div>
@@ -160,16 +141,16 @@ function Profile() {
                   <div className="mb-6">
                     {/* Name Field */}
                     <div className="mb-2">
-                      <h1 className="text-xl md:text-2xl font-bold text-gray-800">{userData.name}</h1>
+                      <h1 className="text-xl md:text-2xl font-bold text-gray-800">{userData?.name}</h1>
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-2 mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(userData.role)}`}> <Shield size={12} className="inline mr-1" /> {userData.role}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(userData?.role)}`}> <Shield size={12} className="inline mr-1" /> {userData?.role}
                       </span>
 
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(userData.status)}`}>
-                        {userData.status === 'active' ? (<CheckCircle size={12} className="inline mr-1" />) : (<XCircle size={12} className="inline mr-1" />)}
-                        {userData.status}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(userData?.status)}`}>
+                        {userData?.status === 'active' ? (<CheckCircle size={12} className="inline mr-1" />) : (<XCircle size={12} className="inline mr-1" />)}
+                        {userData?.status}
                       </span>
                     </div>
 
@@ -177,19 +158,19 @@ function Profile() {
                       {/* Email Field */}
                       <div className="flex items-center justify-center">
                         <Mail size={14} className="mr-2 flex-shrink-0" />
-                        <span className="break-all">{userData.email}</span>
+                        <span className="break-all">{userData?.email}</span>
                       </div>
 
                       {/* Phone Field */}
                       <div className="flex items-center justify-center">
                         <Phone size={14} className="mr-2 flex-shrink-0" />
-                        <span>{userData.phone || 'Not provided'}</span>
+                        <span>{userData?.phone || 'Not provided'}</span>
                       </div>
 
                       {/* Location Field */}
                       <div className="flex items-center justify-center">
                         <MapPin size={14} className="mr-2 flex-shrink-0" />
-                        <span>{userData.location || 'Not provided'}</span>
+                        <span>{userData?.location || 'Not provided'}</span>
                       </div>
                     </div>
                   </div>
@@ -257,8 +238,8 @@ function Profile() {
                 <div className="space-y-4 mb-3">
                   <div className="flex justify-between items-center p-4 bg-gray-200 rounded-2xl">
                     <span className="font-medium text-gray-600">Account Status</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(userData.status)}`}>
-                      {userData.status}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(userData?.status)}`}>
+                      {userData?.status}
                     </span>
                   </div>
                 </div>
@@ -266,8 +247,8 @@ function Profile() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-4 bg-gray-100 rounded-2xl">
                     <span className="font-medium text-gray-600">Role</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(userData.role)}`}>
-                      {userData.role}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(userData?.role)}`}>
+                      {userData?.role}
                     </span>
                   </div>
                 </div>
@@ -286,7 +267,7 @@ function Profile() {
                       <CheckCircle size={20} className="text-green-500 mr-3 flex-shrink-0" />
                       <div>
                         <p className="font-medium text-gray-800">Profile Updated</p>
-                        <p className="text-sm text-gray-600">Last updated {formatDate(userData.updatedAt)}</p>
+                        <p className="text-sm text-gray-600">Last updated {formatDate(userData?.updatedAt)}</p>
                       </div>
                     </div>
                     {/* write logic for recent or not */}
@@ -303,8 +284,8 @@ function Profile() {
                         <p className="text-sm text-gray-600">Account verification completed</p>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${userData.verified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {userData.verified ? 'Verified' : 'Unverified'}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${userData?.verified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {userData?.verified ? 'Verified' : 'Unverified'}
                     </span>
                   </div>
 
@@ -313,19 +294,21 @@ function Profile() {
                       <User size={20} className="text-purple-500 mr-3 flex-shrink-0" />
                       <div>
                         <p className="font-medium text-gray-800">Account Created</p>
-                        <p className="text-sm text-gray-600">Joined as {userData.role}</p>
+                        <p className="text-sm text-gray-600">Joined as {userData?.role}</p>
                       </div>
                     </div>
                     <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {formatDate(userData.createdAt)}
+                      {formatDate(userData?.createdAt)}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>}
+          </div>
         </div>
       </div>
+      }
+
     </div>
   )
 }
