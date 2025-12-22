@@ -1,9 +1,9 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 
-import CreateSales from '../Pharmacist/CreateSales'
-import TodaySales from '../Pharmacist/TodaySales'
-import TicketCheck from '../Pharmacist/TicketCheck'
+import CreateSales from '../pages/Pharmacist/CreateSales'
+import TodaySales from '../pages/Pharmacist/TodaySales'
+import TicketCheck from '../pages/Pharmacist/TicketCheck'
 
 
 function pharmaRoutes() {

@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
-import ProtectedRoutes from './components/ProtectedRoutes'
+import ProtectedRoutes from './context/ProtectedRoutes'
 import { Toaster } from 'sonner'
 
 import Home from './pages/Home'
@@ -11,24 +11,27 @@ import ErrorPage from './pages/ErrorPage'
 
 import AppLayout from './layout/AppLayout'
 
-import sharedRoutes from './pages/routes/sharedRoutes'
-import adminRoutes from './pages/routes/adminRoutes'
-import pharmaRoutes from './pages/routes/pharmaRoutes'
+import sharedRoutes from './routes/sharedRoutes'
+import adminRoutes from './routes/adminRoutes'
+import pharmaRoutes from './routes/pharmaRoutes'
+import PublicRoute from './context/PublicRoutes'
 
 function App() {
 
   return (
     <>
-      <Toaster position="top-right" closeButton={true} richColors toastOptions={{style: {fontSize: "18px"}}}/>
+      <Toaster position="top-right" closeButton={true} richColors toastOptions={{ style: { fontSize: "18px" } }} />
 
       <AuthProvider>
         {/* <Router> */}
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/login' element={<LogIn />} />
 
+          <Route element={<PublicRoute />}>
+            <Route path='/login' element={<LogIn />} />
+          </Route>
 
-          <Route element={<ProtectedRoutes allowedRoles={["Admin", "Pharmacist"]}> <AppLayout/> </ProtectedRoutes>}>
+          <Route element={<ProtectedRoutes allowedRoles={["Admin", "Pharmacist"]}> <AppLayout /> </ProtectedRoutes>}>
             {sharedRoutes()}
             {adminRoutes()}
             {pharmaRoutes()}

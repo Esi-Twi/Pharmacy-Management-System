@@ -1,17 +1,17 @@
 import React from 'react'
 import { Route, Router as Routes } from 'react-router-dom'
 
-import AllMedicines from '../Admin/AllMedicines'
-import AddMedicine from '../Admin/AddMedicine'
-import ManageStaff from '../Admin/ManageStaff'
-import AddStaff from '../Admin/AddStaff'
-import ViewMore from '../Admin/ViewMore'
-import AllSales from '../Admin/AllSales'
-import Dashboard from '../Admin/Dashboard'
-import DailyReport from '../Admin/DailyReport'
-import WeeklyReport from '../Admin/WeeklyReport'
-import YearlyReport from '../Admin/YearlyReport'
-import MontlyReport from '../Admin/MontlyReport'
+import AllMedicines from '../pages/Admin/AllMedicines'
+import AddMedicine from '../pages/Admin/AddMedicine'
+import ManageStaff from '../pages/Admin/ManageStaff'
+import AddStaff from '../pages/Admin/AddStaff'
+import ViewMore from '../pages/Admin/ViewMore'
+import AllSales from '../pages/Admin/AllSales'
+import Dashboard from '../pages/Admin/Dashboard'
+import DailyReport from '../pages/Admin/DailyReport'
+import WeeklyReport from '../pages/Admin/WeeklyReport'
+import YearlyReport from '../pages/Admin/YearlyReport'
+import MontlyReport from '../pages/Admin/MontlyReport'
 
 
 function adminRoutes() {
