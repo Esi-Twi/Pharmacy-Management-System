@@ -13,6 +13,7 @@ const salesRouter = require('./routes/salesRouter')
 const analyticsRouter = require('./routes/analyticsRouter')
 
 app.use(cors({
+    // origin: "http://localhost:5173",
     origin: process.env.FRONTEND_URL,
     credentials: true,
 }))

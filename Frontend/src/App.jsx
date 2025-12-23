@@ -23,13 +23,12 @@ function App() {
       <Toaster position="top-right" closeButton={true} richColors toastOptions={{ style: { fontSize: "18px" } }} />
 
       <AuthProvider>
-        {/* <Router> */}
         <Routes>
           <Route path='/' element={<Home />} />
 
-          <Route element={<PublicRoute />}>
+          {/* <Route element={<PublicRoute />}> */}
             <Route path='/login' element={<LogIn />} />
-          </Route>
+          {/* </Route> */}
 
           <Route element={<ProtectedRoutes allowedRoles={["Admin", "Pharmacist"]}> <AppLayout /> </ProtectedRoutes>}>
             {sharedRoutes()}
