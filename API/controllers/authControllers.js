@@ -87,9 +87,12 @@ exports.login = async (req, res) => {
 
         return res.cookie('Authorization', 'Bearer ' + token, {
             expiresIn: new Date(Date.now() + 8 * 3600000), 
-            httpOnly: process.env.NODE_ENV == 'production', 
-            secure: false,
+            // httpOnly: process.env.NODE_ENV == 'production', 
+            httpOnly: true,
+            secure: true,        // REQUIRED on hosted HTTPS
+            sameSite: 'None',    // REQUIRED for cross-origin
             // secure: process.env.NODE_ENV == 'production',
+
         }).json({success: true, token, user: existingUser, msg: 'logged in successfully!'})
 
 
