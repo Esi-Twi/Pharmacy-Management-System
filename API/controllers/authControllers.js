@@ -103,7 +103,18 @@ exports.login = async (req, res) => {
 }
 
 exports.logout = async (req, res) => {
-    res.clearCookie('Authorization').status(200).json({success: true, msg: 'logged out successfully!'})
+    // res.clearCookie('Authorization').status(200).json({success: true, msg: 'logged out successfully!'})
+
+    exports.logout = (req, res) => {
+        res.clearCookie('Authorization', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None'
+        })
+
+        res.status(200).json({ success: true, msg: 'Logged out' })
+    }
+
 }
 
 

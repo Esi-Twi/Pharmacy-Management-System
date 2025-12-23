@@ -1,13 +1,15 @@
 const jwt = require('jsonwebtoken')
 
 exports.identifier = async (req, res, next) => {
-    let token
+    let token =
+        req.headers.authorization ||
+        req.cookies?.Authorization
 
-    if (req.headers.client === 'not-browser') {
-        token = req.headers.authorization
-    } else {
-        token = req.cookies['Authorization']
-    }
+    // if (req.headers.client === 'not-browser') {
+    //     token = req.headers.authorization
+    // } else {
+    //     token = req.cookies['Authorization']
+    // }
 
     if (!token) {
         return res.status(401).json({ success: false, msg: 'Unauthorized' })
